@@ -19,8 +19,8 @@ class Wall {
     public:
     Wall(double ux, double uy, double vx, double vy, int t);
     ~Wall();
-    double getRcoef();
-    double getTcoef();
+    double getRcoef(double angle);
+    double getTcoef(double angle);
     std::vector<double> getU();
     std::vector<double> getV();
     std::vector<double> getW();

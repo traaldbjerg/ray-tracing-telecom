@@ -14,7 +14,7 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
         t_rel[1] = layout[i].getU()[1] - t[1];
         // vérifier s'ils sont du même côté du mur
 
-        if (dotproduct(t_rel, r_rel) > 0.0) { // réflexion
+        if (dotproduct(t_rel, layout[i].getN()) * dotproduct(r_rel, layout[i].getN()) > 0.0) { // réflexion, si les 2 sont positifs -> positif ; si les 2 sont négatifs -> posiif
             std::vector<double> t_virtuel(2);
             t_virtuel[0] = t[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
             t_virtuel[1] = t[1] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[1];
