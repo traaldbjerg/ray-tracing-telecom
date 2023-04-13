@@ -12,15 +12,15 @@ class Wall {
     int type; // 1 -> brique avec 30cm d'épaisseur ; 2 -> béton avec 50 cm d'épaisseur; 3 -> cloison avec 10 cm d'épaisseur
               // les valeurs de permittivité et de conductivité seront adaptées en fonction
     double width;
-    double rel_eps;
+    double eps_rel;
     double sigma;
 
     
     public:
     Wall(double ux, double uy, double vx, double vy, int t);
     ~Wall();
-    double getRcoef();
-    double getTcoef();
+    double getRcoef(double scal);
+    double getTcoef(double scal);
     std::vector<double> getU();
     std::vector<double> getV();
     std::vector<double> getW();
