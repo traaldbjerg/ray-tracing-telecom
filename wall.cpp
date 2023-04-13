@@ -35,8 +35,8 @@ double Wall::getRcoef(double scal) { // coefficient de réflexion, on considère
     double gamma;
     double Z1 = 120 * M_PI;
     double Z2 = 120 * M_PI / sqrt(eps_rel);
-    double cost = scal; // incorrect, loi de Snell
-    double cosi = scal;
+    double cosi = scal;   
+    double cost = sqrt( (1/eps_rel) * (1 + cosi*cosi) - 1 ); // loi de Snell
     gamma = (Z2 * cosi - Z1 * cost) / (Z2 * cosi + Z1 * cost);
     return gamma;
 }
@@ -45,12 +45,11 @@ double Wall::getTcoef(double scal) { // coefficient de transmission, on considè
     double T;
     double Z1 = 120 * M_PI;
     double Z2 = 120 * M_PI / sqrt(eps_rel);
-    double cost = scal; // incorrect, loi de Snell
-    double cosi = scal;
+    double cosi = scal;   
+    double cost = sqrt( (1/eps_rel) * (1 + cosi*cosi) - 1 ); // loi de Snell
     T = (2 * Z2 * cosi) / (Z2 * cosi + Z1 * cost);
     return T;
 }
-
 std::vector<double> Wall::getU() {
     return u;
 }
