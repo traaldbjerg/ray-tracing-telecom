@@ -3,6 +3,7 @@
 #include <cmath>
 #include "common.hpp"
 #include "reflections.hpp"
+#include "ray.hpp"
 
 
 
@@ -16,6 +17,7 @@ int main() {
     std::vector<double> t(2); t[0] = -5.0 ; t[1] = 5.0; // coordonnées de l'émetteur
     int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
+    std::vector<Ray> rays; // vecteur qui contiendra l'ensemble des rayons
     // initialiser layout
     layout.push_back(Wall(0.0, 0.0, 10.0, 0.0, 2));
     layout.push_back(Wall(0.0, 0.0, 0.0, 10.0, 2));
@@ -29,26 +31,18 @@ int main() {
     FILE *f_rays = fopen("rays.dat", "w");
     FILE *f_power = fopen("power.dat", "w");
 
-    std::vector<double> &r_copy = r; // copie de r pour pouvoir l'utiliser dans les fonctions
+    //std::vector<double> r_copy = r; // copie de r pour pouvoir l'utiliser dans les fonctions
 
     // fonctions à appeler
 
     // boucle pour un récepteur unique, tracer les rayons
 
     for (int k = 1; k < recursion_depth; k++) { // d'abord transmission directe, puis 1 interaction puis 2 etc
-        int n = 0; // nombre de réflexions potentielles
-        for (int a = 1; a < k; a++) {
-            int m = 1;
-            for(int l = 0; l < a; l++) m *= q;
-            n += m; // ... + q^4 + q^3 + q^2 + q
-        }
-        double *loss_factors = new double[n]; // vecteur qui contiendra les facteurs de perte de puissance
-        double *reflections = new double[2 * n]; // vecteur qui contiendra les coordonnées des points de réflexion successifs 
-        compute_reflections(*f_rays, layout, t, r, k, power, loss_factors, reflections);
+        compute_reflections(*f_rays, layout, t, r, k, power, rays);
 
         // vérifier quels rayons sont acceptables, et les tracer
 
-
+        
     }
 
     fclose(f_rays);
@@ -60,15 +54,7 @@ int main() {
         for(int j = 0 ; j < Ly * h ; j++) {
             r[1] = j/h;
             for (int k = 1; k < recursion_depth; k++) { // d'abord transmission directe, puis 1 interaction puis 2 etc
-                int n = 0; // nombre de réflexions potentielles
-                for (int a = 1; a < k; a++) {
-                    int m = 1;
-                    for(int l = 0; l < a; l++) m *= q;
-                    n += m; // ... + q^4 + q^3 + q^2 + q
-                }
-                double *loss_factors = new double[n]; // vecteur qui contiendra les facteurs de perte de puissance
-                double *reflections = new double[2 * n]; // vecteur qui contiendra les coordonnées des points de réflexion successifs 
-                compute_reflections(*f_power, layout, t, r, k, power, loss_factors, reflections);
+                compute_reflections(*f_power, layout, t, r, k, power, rays);
             }
         }
     }

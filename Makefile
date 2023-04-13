@@ -8,7 +8,7 @@ clean:
 	rm *.o 
 	rm main
 
-main: main.cpp wall.o dotproduct.o reflections.o
+main: main.cpp wall.o dotproduct.o reflections.o ray.o
 	g++ -g $(COPT) $^ -o $@
 
 %.o: %.cpp

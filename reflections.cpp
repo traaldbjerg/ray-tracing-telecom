@@ -1,7 +1,7 @@
 #include "reflections.hpp"
 
-std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::vector<double> t, std::vector<double> &r,
- int rec_depth, double &d, double *loss_factors, double *reflections) {
+std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::vector<double> t, std::vector<double> r,
+ int rec_depth, double &d, std::vector<Ray> &rays) {
     // layout ensemble des murs du plan ; r les coordonnées du récepteur
     // trouver les n-uples de murs qui permettent les réflexions successives jusqu'au récepteur
     // retourne un vecteur de double, les 2 premières composantes sont les coordonnées de l'émetteur virtuel et le 3e est la perte de puissance
@@ -11,6 +11,8 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
     //std::vector<std::vector<double>> reflections(n);
 
     for (int i = 0; i < layout.size() ; i++) { // itère sur les murs
+
+        std::vector<Ray> rays_in_scope;
 
         //std::vector<double> loss_factors;
 
@@ -40,10 +42,14 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
 
         //if (0.0 < dist && dist < 1.0) { // sinon la réflexion est invalide car en dehors du mur -> pas besoin de calculer plus de choses
 
-        std::vector<double> &r_copy = r; // copie de r pour la récursion qui peut être modifiée par l'itération suivante
+        std::vector<double> r_copy = r; // copie de r pour la récursion qui peut être modifiée par l'itération suivante
             
         if (rec_depth > 1) {
-            compute_reflections(f, layout, t_virtuel, r_copy, rec_depth - 1, d, loss_factors, reflections); // récursion
+            compute_reflections(f, layout, t_virtuel, r_copy, rec_depth - 1, d, rays_in_scope); // récursion
+        } else {
+            Ray new_ray = Ray();
+            rays_in_scope.push_back(new_ray);
+            new_ray.extend_path(r);
         }
 
         std::vector<double> diff(2); diff[0] = r_copy[0] - t_virtuel[0]; diff[1] = r_copy[1] - t_virtuel[1];
@@ -60,6 +66,11 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
 
             std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 
+            for (int j = 0; j < rays_in_scope.size(); j++) {
+                rays_in_scope[j].extend_path(r_copy);
+                rays_in_scope[j].add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN())));
+            }
+
             // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
 
             //loss_factors.push_back(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN()))); // obtenir le coefficient de perte par réflexion
@@ -72,6 +83,10 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
             //loss_factors.push_back(0.0);
         }
 
+
+        for (int j = 0; j < rays_in_scope.size(); j++) { // ajouter les rayons à la liste des rayons qui sera fournie au scope supérieur
+                rays.push_back(rays_in_scope[j]);
+            }
 
         //}
         /*}

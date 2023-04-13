@@ -2,3 +2,4 @@
 
 #include <vector>
 #include "wall.hpp"
+#include "ray.hpp"
