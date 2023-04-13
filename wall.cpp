@@ -29,7 +29,7 @@ Wall::Wall(double ux, double uy, double vx, double vy, int t) {
     //   = 120 * M_PI / sqrt(eps_rel) en remplaçant les valeurs des constantes
 }
 
-Wall::~Wall() {}
+//Wall::~Wall() {}
 
 double Wall::getRcoef(double scal) { // coefficient de réflexion, on considère uniquement la polarisation perpendiculaire au plan d'incidence
     double gamma;

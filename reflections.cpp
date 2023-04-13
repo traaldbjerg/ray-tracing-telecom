@@ -1,7 +1,9 @@
 #include "reflections.hpp"
 
-std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::vector<double> t, std::vector<double> r,
+void compute_reflections(FILE f, std::vector<Wall> layout, std::vector<double> t, std::vector<double> r,
  int rec_depth, double &d, std::vector<Ray> &rays) {
+
+    std::cout << "hello this is compute_reflections" << std::endl;
     // layout ensemble des murs du plan ; r les coordonnées du récepteur
     // trouver les n-uples de murs qui permettent les réflexions successives jusqu'au récepteur
     // retourne un vecteur de double, les 2 premières composantes sont les coordonnées de l'émetteur virtuel et le 3e est la perte de puissance
@@ -18,8 +20,8 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
 
         // trouver les positions du récepteur et de l'émetteur (virtuel ou non) par rapport au mur
 
-        std::vector<std::vector<double>> previous_t; // coordonnées des émetteurs virtuels précédents (pour la récursion)
-        previous_t.push_back(t); // ajouter l'émetteur réel à la liste des émetteurs virtuels précédents
+        //std::vector<std::vector<double>> previous_t; // coordonnées des émetteurs virtuels précédents (pour la récursion)
+        //previous_t.push_back(t); // ajouter l'émetteur réel à la liste des émetteurs virtuels précédents
 
         std::vector<double> r_rel(2);
         r_rel[0] = layout[i].getU()[0] - r[0];  // vecteur de r à u
@@ -32,7 +34,7 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
         t_virtuel[0] = t[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
         t_virtuel[1] = t[1] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[1];
 
-        previous_t.push_back(t_virtuel); // ajouter l'émetteur virtuel à la liste des émetteurs virtuels précédents
+        //previous_t.push_back(t_virtuel); // ajouter l'émetteur virtuel à la liste des émetteurs virtuels précédents
 
         // vérifier si le point de réflexion n'est pas en dehors du mur
 
@@ -47,7 +49,7 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
         if (rec_depth > 1) {
             compute_reflections(f, layout, t_virtuel, r_copy, rec_depth - 1, d, rays_in_scope); // récursion
         } else {
-            Ray new_ray = Ray();
+            Ray new_ray;
             rays_in_scope.push_back(new_ray);
             new_ray.extend_path(r);
         }
@@ -76,11 +78,9 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
 
                 // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
 
-                //loss_factors.push_back(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN()))); // obtenir le coefficient de perte par réflexion
-
             else { // rebond invalide -> retirer le rayon de la liste des rayons à traiter
                 rays_in_scope.erase(rays_in_scope.begin() + j);
-                j--;
+                j--; // pour ne pas sauter un rayon puisque a liste est réduite de 1 après délétion
             }
         
         }

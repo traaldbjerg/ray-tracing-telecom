@@ -3,11 +3,10 @@
 #include <cmath>
 #include "common.hpp"
 #include "reflections.hpp"
-#include "ray.hpp"
-
-
 
 int main() {
+
+    std::cout << "hello this is main" << std::endl;
     
     // variables à fixer
     int h = 10; // nombre de pas par mètre
@@ -19,14 +18,21 @@ int main() {
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays; // vecteur qui contiendra l'ensemble des rayons
     // initialiser layout
-    layout.push_back(Wall(0.0, 0.0, 10.0, 0.0, 2));
-    layout.push_back(Wall(0.0, 0.0, 0.0, 10.0, 2));
-    layout.push_back(Wall(0.0, 10.0, 10.0, 10.0, 2));
-    layout.push_back(Wall(10.0, 0.0, 10.0, 10.0, 2));
+    std::cout << "hello" << std::endl;
+    //layout.emplace_back(0.0, 0.0, 10.0, 0.0, 2);
+    //layout.emplace_back(0.0, 0.0, 0.0, 10.0, 2);
+    //layout.emplace_back(0.0, 10.0, 10.0, 10.0, 2);
+    //layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
+    std::cout << "hello x2" << std::endl;
+    Wall wall1(0.0, 0.0, 10.0, 0.0, 2); //layout.push_back(wall1);
+    Wall wall2(0.0, 0.0, 0.0, 10.0, 2); //layout.push_back(wall2);
+    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); //layout.push_back(wall3);
+    Wall wall4(10.0, 0.0, 10.0, 10.0, 2); //layout.push_back(wall4);
+    std::cout << "hello x3" << std::endl;
 
     std::vector<double> r(2); // coordonées du récepteur, changera pour chaque itération de la boucle ci-dessous
 
-    int q = layout.size(); // nombre de murs
+    //int q = layout.size(); // nombre de murs
 
     FILE *f_rays = fopen("rays.dat", "w");
     FILE *f_power = fopen("power.dat", "w");
