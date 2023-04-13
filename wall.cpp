@@ -21,32 +21,32 @@ Wall::Wall(double ux, double uy, double vx, double vy, int t) {
     double norm_n = sqrt(n[0] * n[0] + n[1] * n[1]); n[0] /= norm_n; n[1] /= norm_n; // normalisation
     type = t;
     // initialiser les différentes caractéristiques du mur
-    if (type == 1) {width = 0.3 ; rel_eps = 4.6 ; sigma = 0.02;} // [m; -; S]
-    if (type == 2) {width = 0.5 ; rel_eps = 5.0 ; sigma = 0.014;} // [m; -; S]
-    if (type == 3) {width = 0.1 ; rel_eps = 2.25 ; sigma = 0.04;} // [m; -; S]
+    if (type == 1) {width = 0.3 ; eps_rel = 4.6 ; sigma = 0.02;} // [m; -; S]
+    if (type == 2) {width = 0.5 ; eps_rel = 5.0 ; sigma = 0.014;} // [m; -; S]
+    if (type == 3) {width = 0.1 ; eps_rel = 2.25 ; sigma = 0.04;} // [m; -; S]
 
-    // Z = sqrt(mu_0 / eps_0) / sqrt(rel_eps) par déf de la permittivité relative
-    //   = 120 * M_PI / sqrt(rel_eps) en remplaçant les valeurs des constantes
+    // Z = sqrt(mu_0 / eps_0) / sqrt(eps_rel) par déf de la permittivité relative
+    //   = 120 * M_PI / sqrt(eps_rel) en remplaçant les valeurs des constantes
 }
 
 Wall::~Wall() {}
 
-double Wall::getRcoef(double angle) { // coefficient de réflexion, on considère uniquement la polarisation perpendiculaire au plan d'incidence
+double Wall::getRcoef(double scal) { // coefficient de réflexion, on considère uniquement la polarisation perpendiculaire au plan d'incidence
     double gamma;
     double Z1 = 120 * M_PI;
-    double Z2 = 120 * M_PI / sqrt(rel_eps);
-    double cost;
-    double cosi;
+    double Z2 = 120 * M_PI / sqrt(eps_rel);
+    double cost = scal; // incorrect, loi de Snell
+    double cosi = scal;
     gamma = (Z2 * cosi - Z1 * cost) / (Z2 * cosi + Z1 * cost);
     return gamma;
 }
 
-double Wall::getTcoef(double angle) { // coefficient de transmission, on considère uniquement la polarisation perpendiculaire au plan d'incidence
+double Wall::getTcoef(double scal) { // coefficient de transmission, on considère uniquement la polarisation perpendiculaire au plan d'incidence
     double T;
     double Z1 = 120 * M_PI;
-    double Z2 = 120 * M_PI / sqrt(rel_eps);
-    double cost;
-    double cosi;
+    double Z2 = 120 * M_PI / sqrt(eps_rel);
+    double cost = scal; // incorrect, loi de Snell
+    double cosi = scal;
     T = (2 * Z2 * cosi) / (Z2 * cosi + Z1 * cost);
     return T;
 }

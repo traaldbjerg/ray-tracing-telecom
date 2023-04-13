@@ -24,26 +24,55 @@ int main() {
 
     std::vector<double> r(2); // coordonées du récepteur, changera pour chaque itération de la boucle ci-dessous
 
+    int q = layout.size(); // nombre de murs
+
     FILE *f_rays = fopen("rays.dat", "w");
     FILE *f_power = fopen("power.dat", "w");
 
-
-
-
+    std::vector<double> &r_copy = r; // copie de r pour pouvoir l'utiliser dans les fonctions
 
     // fonctions à appeler
+
+    // boucle pour un récepteur unique, tracer les rayons
+
+    for (int k = 1; k < recursion_depth; k++) { // d'abord transmission directe, puis 1 interaction puis 2 etc
+        int n = 0; // nombre de réflexions potentielles
+        for (int a = 1; a < k; a++) {
+            int m = 1;
+            for(int l = 0; l < a; l++) m *= q;
+            n += m; // ... + q^4 + q^3 + q^2 + q
+        }
+        double *loss_factors = new double[n]; // vecteur qui contiendra les facteurs de perte de puissance
+        double *reflections = new double[2 * n]; // vecteur qui contiendra les coordonnées des points de réflexion successifs 
+        compute_reflections(*f_rays, layout, t, r, k, power, loss_factors, reflections);
+
+        // vérifier quels rayons sont acceptables, et les tracer
+
+
+    }
+
+    fclose(f_rays);
+
+    // boucle pour toutes les positions de récepteur, plotter la puissance sur une grille
 
     for (int i = 0; i <= Lx * h; i++) { // itère d'abord verticalement, colonne par colonne
         r[0] = i/h;
         for(int j = 0 ; j < Ly * h ; j++) {
             r[1] = j/h;
             for (int k = 1; k < recursion_depth; k++) { // d'abord transmission directe, puis 1 interaction puis 2 etc
-                compute_reflections(*f_rays, layout, t, r, k, power);
+                int n = 0; // nombre de réflexions potentielles
+                for (int a = 1; a < k; a++) {
+                    int m = 1;
+                    for(int l = 0; l < a; l++) m *= q;
+                    n += m; // ... + q^4 + q^3 + q^2 + q
+                }
+                double *loss_factors = new double[n]; // vecteur qui contiendra les facteurs de perte de puissance
+                double *reflections = new double[2 * n]; // vecteur qui contiendra les coordonnées des points de réflexion successifs 
+                compute_reflections(*f_power, layout, t, r, k, power, loss_factors, reflections);
             }
         }
     }
 
-    fclose(f_rays);
     fclose(f_power);
 
 
