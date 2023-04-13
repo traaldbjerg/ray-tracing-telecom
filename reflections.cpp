@@ -52,37 +52,38 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
             new_ray.extend_path(r);
         }
 
-        std::vector<double> diff(2); diff[0] = r_copy[0] - t_virtuel[0]; diff[1] = r_copy[1] - t_virtuel[1];
-        double dist = (diff[1] * (r_copy[0] - layout[i].getU()[0]) - diff[0] * (r_copy[1] - layout[i].getU()[1])) / (layout[i].getW()[0] * diff[1] - layout[i].getW()[1] * diff[0]);
-                                                                                                        // division par 0 ssi rayon parallèle au mur
+        for (int j = 1; j < rays_in_scope.size(); j++) { // traiter chaque rayon qui arrive au mur individuellement
 
-        if (0.0 < dist && dist < 1.0 // sinon la réflexion est invalide car en dehors du mur -> pas besoin de calculer plus de choses
-                       && dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) < 0.0) { 
-                       // si l'antenne virtuelle est du côté opposé au récepteur -> réflexion
+            std::vector<double> r_copy = rays_in_scope[j].get_last_point(); // copie de r pour la récursion qui peut être modifiée par l'itération suivante
 
-            std::vector<double> r_copy_2 = r_copy; // point de réflexion de l'itération précédente
-            r_copy[0] = layout[i].getU()[0] + dist * layout[i].getW()[0]; // calculer le point de réflexion de cette itération-ci
-            r_copy[1] = layout[i].getU()[1] + dist * layout[i].getW()[1];
+            std::vector<double> diff(2); diff[0] = r_copy[0] - t_virtuel[0]; diff[1] = r_copy[1] - t_virtuel[1];
+            double dist = (diff[1] * (r_copy[0] - layout[i].getU()[0]) - diff[0] * (r_copy[1] - layout[i].getU()[1])) / (layout[i].getW()[0] * diff[1] - layout[i].getW()[1] * diff[0]);
+                                                                                                            // division par 0 ssi rayon parallèle au mur
 
-            std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
+            if (0.0 < dist && dist < 1.0 // sinon la réflexion est invalide car en dehors du mur -> pas besoin de calculer plus de choses
+                        && dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) < 0.0) { 
+                        // si l'antenne virtuelle est du côté opposé au récepteur -> réflexion
 
-            for (int j = 0; j < rays_in_scope.size(); j++) {
+                std::vector<double> r_copy_2 = r_copy; // point de réflexion de l'itération précédente
+                r_copy[0] = layout[i].getU()[0] + dist * layout[i].getW()[0]; // calculer le point de réflexion de cette itération-ci
+                r_copy[1] = layout[i].getU()[1] + dist * layout[i].getW()[1];
+
+                std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
+
                 rays_in_scope[j].extend_path(r_copy);
                 rays_in_scope[j].add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN())));
             }
 
-            // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
+                // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
 
-            //loss_factors.push_back(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN()))); // obtenir le coefficient de perte par réflexion
+                //loss_factors.push_back(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN()))); // obtenir le coefficient de perte par réflexion
 
-            
-
+            else { // rebond invalide -> retirer le rayon de la liste des rayons à traiter
+                rays_in_scope.erase(rays_in_scope.begin() + j);
+                j--;
+            }
+        
         }
-
-        else { // rebond invalide -> sortir de la boucle ?
-            //loss_factors.push_back(0.0);
-        }
-
 
         for (int j = 0; j < rays_in_scope.size(); j++) { // ajouter les rayons à la liste des rayons qui sera fournie au scope supérieur
                 rays.push_back(rays_in_scope[j]);
@@ -96,4 +97,4 @@ std::vector<double> compute_reflections(FILE f, std::vector<Wall> layout, std::v
             if (rec_depth > 1) compute_reflections(f, layout, t, r, rec_depth - 1, d); // récursion
         }*/
     }
-}
+ }
