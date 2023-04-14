@@ -26,7 +26,7 @@ int main() {
     //std::cout << "hello x2" << std::endl;
     Wall wall1(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall1);
     Wall wall2(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall2);
-    //Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
     Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
     //std::cout << "hello x3" << std::endl;
     

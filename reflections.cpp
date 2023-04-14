@@ -10,11 +10,11 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
 
     for (int i = 0; i < layout.size() ; i++) { // itère sur les murs
 
-        if (i == previous_wall_index) {std::cout << "this is a jump" << std::endl;} // sauter le mur sur lequel on s'est reflété précédemment
+        if (i == previous_wall_index) {} //{std::cout << "this is a jump" << std::endl;} // sauter le mur sur lequel on s'est reflété précédemment
 
         else {
 
-            std::cout << "this is wall " << i << std::endl;
+            //std::cout << "this is wall " << i << std::endl;
 
             std::vector<Ray> rays_in_scope; // séparer l'ensemble complet de tous les rayons de ceux dans le scope de cette récursion-ci
 
@@ -24,12 +24,12 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
             r_rel[0] = - layout[i].getU()[0] + r[0];  // vecteur de r à u
             r_rel[1] = - layout[i].getU()[1] + r[1]; 
 
-            std::cout << "r_rel " << i << ": (" << r_rel[0] << ", " << r_rel[1] << ")" << std::endl;
+            //std::cout << "r_rel " << i << ": (" << r_rel[0] << ", " << r_rel[1] << ")" << std::endl;
             std::vector<double> t_rel(2);
             t_rel[0] = - layout[i].getU()[0] + t[0];  // vecteur de t à u
             t_rel[1] = - layout[i].getU()[1] + t[1]; 
 
-            std::cout << "t_rel " << i << ": (" << t_rel[0] << ", " << t_rel[1] << ")" << std::endl;
+            //std::cout << "t_rel " << i << ": (" << t_rel[0] << ", " << t_rel[1] << ")" << std::endl;
 
             std::vector<double> t_virtuel(2); // coordonnées de l'émetteur virtuel
             t_virtuel[0] = t[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
@@ -38,7 +38,7 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
             t_virtuel_rel[0] = t_rel[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
             t_virtuel_rel[1] = t_rel[1] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[1];
 
-            std::cout << "t_virtuel " << i + 1 << ": (" << t_virtuel[0] << ", " << t_virtuel[1] << ")" << std::endl;
+            //std::cout << "t_virtuel " << i + 1 << ": (" << t_virtuel[0] << ", " << t_virtuel[1] << ")" << std::endl;
 
             //std::vector<double> r_copy = r; // copie de r pour la récursion qui peut être modifiée par l'itération suivante
                 

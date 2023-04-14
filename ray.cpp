@@ -1,6 +1,6 @@
 #include "ray.hpp"
 
-Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}};} // vecteur nul en placeholder pour empecher les erreurs de segmentation, à retirer à la fin
+Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}};}
 
 Ray::~Ray() {}
 
