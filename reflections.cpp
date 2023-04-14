@@ -45,9 +45,7 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
             if (rec_depth > 1) {
                 compute_reflections(f, layout, i, t_virtuel, r, rec_depth - 1, d, rays_in_scope); // récursion
             } else {
-                Ray new_ray;
-                new_ray.extend_path(r);
-                new_ray.remove_placeholder_point(); // on peut retirer le placeholder car le vrai récepteur est maintenant connu
+                Ray new_ray(r);
                 rays_in_scope.push_back(new_ray); // très important de mettre cette commande après le changement de new_ray, sinon la copie pas modifiée est fournie à la suite
                 //std::cout << "this is a new ray" << std::endl; new_ray.print_path();
             }
