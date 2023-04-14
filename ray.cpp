@@ -1,6 +1,6 @@
 #include "ray.hpp"
 
-Ray::Ray() {loss_factors = {1};}
+Ray::Ray() {loss_factors = {1}; path = {{0, 0}};}
 
 Ray::~Ray() {}
 
@@ -17,12 +17,11 @@ void Ray::add_loss_factor(double factor) {
 }
 
 std::vector<double> Ray::get_last_point() {
-    return path[path.size() - 1];
+    return path.back();
 }
 
-/*void Ray::print_path() {
+void Ray::print_path() {
     for (int i = 0; i < path.size(); i++) {
         std::cout << "Point " << i << ": (" << path[i][0] << ", " << path[i][1] << ")" << std::endl;
     }
 }
-*/

@@ -6,31 +6,33 @@
 
 int main() {
 
-    std::cout << "hello this is main" << std::endl;
+    //std::cout << "hello this is main" << std::endl;
     
     // variables à fixer
     int h = 10; // nombre de pas par mètre
     double Lx = 10.0;
     double Ly = 10.0;
     double power = 0.0;
-    std::vector<double> t(2); t[0] = -5.0 ; t[1] = 5.0; // coordonnées de l'émetteur
-    int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
+    std::vector<double> t(2); t[0] = -5.0 ; t[1] = -5.0; // coordonnées de l'émetteur
+    int recursion_depth = 5; // nombre de fois qu'on effectue la récursion
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays; // vecteur qui contiendra l'ensemble des rayons
     // initialiser layout
-    std::cout << "hello" << std::endl;
+    //std::cout << "hello" << std::endl;
     //layout.emplace_back(0.0, 0.0, 10.0, 0.0, 2);
     //layout.emplace_back(0.0, 0.0, 0.0, 10.0, 2);
     //layout.emplace_back(0.0, 10.0, 10.0, 10.0, 2);
     //layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
-    std::cout << "hello x2" << std::endl;
-    Wall wall1(0.0, 0.0, 10.0, 0.0, 2); //layout.push_back(wall1);
-    Wall wall2(0.0, 0.0, 0.0, 10.0, 2); //layout.push_back(wall2);
-    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); //layout.push_back(wall3);
-    Wall wall4(10.0, 0.0, 10.0, 10.0, 2); //layout.push_back(wall4);
-    std::cout << "hello x3" << std::endl;
-
+    //std::cout << "hello x2" << std::endl;
+    Wall wall1(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall1);
+    Wall wall2(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall2);
+    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+    Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
+    //std::cout << "hello x3" << std::endl;
+    
     std::vector<double> r(2); // coordonées du récepteur, changera pour chaque itération de la boucle ci-dessous
+
+    r[0] = 5.0; r[1] = 5.0; // coordonnées du récepteur
 
     //int q = layout.size(); // nombre de murs
 
@@ -43,18 +45,22 @@ int main() {
 
     // boucle pour un récepteur unique, tracer les rayons
 
-    for (int k = 1; k < recursion_depth; k++) { // d'abord transmission directe, puis 1 interaction puis 2 etc
-        compute_reflections(*f_rays, layout, t, r, k, power, rays);
+    for (int k = recursion_depth; k > 0; k--) { // d'abord transmission directe, puis 1 interaction puis 2 etc
+        compute_reflections(*f_rays, layout, 100, t, r, k, power, rays);
 
         // vérifier quels rayons sont acceptables, et les tracer
-
         
+        
+    }
+
+    for (int i = 0; i < rays.size(); i++) {
+        rays[i].print_path();
     }
 
     fclose(f_rays);
 
     // boucle pour toutes les positions de récepteur, plotter la puissance sur une grille
-
+/*
     for (int i = 0; i <= Lx * h; i++) { // itère d'abord verticalement, colonne par colonne
         r[0] = i/h;
         for(int j = 0 ; j < Ly * h ; j++) {
@@ -64,7 +70,7 @@ int main() {
             }
         }
     }
-
+*/
     fclose(f_power);
 
 

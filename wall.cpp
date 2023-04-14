@@ -1,4 +1,5 @@
 #include "wall.hpp"
+#include <iostream>
 
 //class Wall {
 //attributes
@@ -10,15 +11,18 @@ int type; // 1 -> brique avec 30cm d'épaisseur ; 2 -> béton avec 50 cm d'épai
 
 public:*/
 Wall::Wall(double ux, double uy, double vx, double vy, int t) {
-    u[0] = ux;
-    u[1] = uy;
-    v[0] = vx;
-    v[1] = vy;
-    w[0] = vx - ux;
-    w[1] = vy - uy;
-    n[0] = uy - vy;
-    n[1] = vx - ux;
+    u.push_back(ux); // compo x
+    u.push_back(uy); // compo y
+    v.push_back(vx); // compo x
+    v.push_back(vy); // compo y
+    w.push_back(vx - ux); // compo x
+    w.push_back(vy - uy); // compo y
+    n.push_back(uy - vy); // compo x
+    n.push_back(vx - ux); // compo y
+
     double norm_n = sqrt(n[0] * n[0] + n[1] * n[1]); n[0] /= norm_n; n[1] /= norm_n; // normalisation
+
+    //std::cout << "normal:" << n[0] << ", " << n[1] << std::endl;
     type = t;
     // initialiser les différentes caractéristiques du mur
     if (type == 1) {width = 0.3 ; eps_rel = 4.6 ; sigma = 0.02;} // [m; -; S]

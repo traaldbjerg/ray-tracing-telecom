@@ -13,5 +13,5 @@ class Ray {
         std::vector<double> get_last_point();
         void extend_path(std::vector<double> new_point);
         std::vector<std::vector<double>> get_path();
-        //void print_path();
+        void print_path();
 };
