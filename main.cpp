@@ -13,9 +13,11 @@ int main() {
     //double Lx = 10.0;
     //double Ly = 10.0;
     double power = 0.0;
-    std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
-    std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
-    int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
+    //std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
+    //std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
+    std::vector<double> t(2); t[0] = -5 ; t[1] = 5; // coordonnées de l'émetteur
+    std::vector<double> r(2); r[0] = 5; r[1] = 5; // coordonnées du récepteur
+    int recursion_depth = 10; // nombre de fois qu'on effectue la récursion
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays; // vecteur qui contiendra l'ensemble des rayons
     // initialiser layout
@@ -26,10 +28,13 @@ int main() {
     //layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
     //std::cout << "hello x2" << std::endl;
     // disposition de l'exo 8.1
-    Wall wall1(0.0, 0.0, 0.0, 80.0, 2); layout.push_back(wall1);
-    Wall wall2(0.0, 20.0, 80.0, 20.0, 2); layout.push_back(wall2);
-    Wall wall3(0.0, 80.0, 80.0, 80.0, 2); layout.push_back(wall3);
-    //Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
+    //Wall wall1(0.0, 0.0, 0.0, 80.0, 2); layout.push_back(wall1);
+    //Wall wall2(0.0, 20.0, 80.0, 20.0, 2); layout.push_back(wall2);
+    //Wall wall3(0.0, 80.0, 80.0, 80.0, 2); layout.push_back(wall3);
+    Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1);
+    Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);
+    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+    Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
     //Wall wall5(4, 3, 6, 5, 2); layout.push_back(wall5);
     //std::cout << "hello x3" << std::endl;
     
