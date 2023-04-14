@@ -13,7 +13,7 @@ int main() {
     double Lx = 10.0;
     double Ly = 10.0;
     double power = 0.0;
-    std::vector<double> t(2); t[0] = -5.0 ; t[1] = -5.0; // coordonnées de l'émetteur
+    std::vector<double> t(2); t[0] = -5.0 ; t[1] = 5.0; // coordonnées de l'émetteur
     int recursion_depth = 5; // nombre de fois qu'on effectue la récursion
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays; // vecteur qui contiendra l'ensemble des rayons
@@ -26,7 +26,7 @@ int main() {
     //std::cout << "hello x2" << std::endl;
     Wall wall1(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall1);
     Wall wall2(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall2);
-    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+    //Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
     Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
     //std::cout << "hello x3" << std::endl;
     
@@ -39,14 +39,12 @@ int main() {
     FILE *f_rays = fopen("rays.dat", "w");
     FILE *f_power = fopen("power.dat", "w");
 
-    //std::vector<double> r_copy = r; // copie de r pour pouvoir l'utiliser dans les fonctions
-
     // fonctions à appeler
 
     // boucle pour un récepteur unique, tracer les rayons
 
-    for (int k = recursion_depth; k > 0; k--) { // d'abord transmission directe, puis 1 interaction puis 2 etc
-        compute_reflections(*f_rays, layout, 100, t, r, k, power, rays);
+    for (int k = recursion_depth; k > 0; k--) { // d'abord max de réflexions puis ... puis 1 interaction puis 0 etc
+        compute_reflections(*f_rays, layout, 100, t, r, k, power, rays); // 100 en placeholder, fonctionne tant qu'il y a moins de 100 murs
 
         // vérifier quels rayons sont acceptables, et les tracer
         

@@ -14,4 +14,5 @@ class Ray {
         void extend_path(std::vector<double> new_point);
         std::vector<std::vector<double>> get_path();
         void print_path();
+        void remove_placeholder_point();
 };
