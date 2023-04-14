@@ -10,11 +10,11 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
 
     for (int i = 0; i < layout.size() ; i++) { // itère sur les murs
 
-        if (i == previous_wall_index) {std::cout << "this is a jump" << std::endl;} // sauter le mur sur lequel on s'est reflété précédemment
+        if (i == previous_wall_index) {} //{std::cout << "this is a jump" << std::endl;} // sauter le mur sur lequel on s'est reflété précédemment
 
         else {
 
-            std::cout << "this is wall " << i << std::endl;
+            //std::cout << "this is wall " << i << std::endl;
 
             std::vector<Ray> rays_in_scope; // séparer l'ensemble complet de tous les rayons de ceux dans le scope de cette récursion-ci
 
@@ -24,12 +24,12 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
             r_rel[0] = - layout[i].getU()[0] + r[0];  // vecteur de r à u
             r_rel[1] = - layout[i].getU()[1] + r[1]; 
 
-            std::cout << "r_rel " << i << ": (" << r_rel[0] << ", " << r_rel[1] << ")" << std::endl;
+            //std::cout << "r_rel " << i << ": (" << r_rel[0] << ", " << r_rel[1] << ")" << std::endl;
             std::vector<double> t_rel(2);
             t_rel[0] = - layout[i].getU()[0] + t[0];  // vecteur de t à u
             t_rel[1] = - layout[i].getU()[1] + t[1]; 
 
-            std::cout << "t_rel " << i << ": (" << t_rel[0] << ", " << t_rel[1] << ")" << std::endl;
+            //std::cout << "t_rel " << i << ": (" << t_rel[0] << ", " << t_rel[1] << ")" << std::endl;
 
             std::vector<double> t_virtuel(2); // coordonnées de l'émetteur virtuel
             t_virtuel[0] = t[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
@@ -38,24 +38,23 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
             t_virtuel_rel[0] = t_rel[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
             t_virtuel_rel[1] = t_rel[1] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[1];
 
-            std::cout << "t_virtuel " << i + 1 << ": (" << t_virtuel[0] << ", " << t_virtuel[1] << ")" << std::endl;
+            //std::cout << "t_virtuel " << i + 1 << ": (" << t_virtuel[0] << ", " << t_virtuel[1] << ")" << std::endl;
 
-            std::vector<double> r_copy = r; // copie de r pour la récursion qui peut être modifiée par l'itération suivante
+            //std::vector<double> r_copy = r; // copie de r pour la récursion qui peut être modifiée par l'itération suivante
                 
             if (rec_depth > 1) {
-                compute_reflections(f, layout, i, t_virtuel, r_copy, rec_depth - 1, d, rays_in_scope); // récursion
+                compute_reflections(f, layout, i, t_virtuel, r, rec_depth - 1, d, rays_in_scope); // récursion
             } else {
-                Ray new_ray;
-                rays_in_scope.push_back(new_ray);
-                new_ray.extend_path(r);
-                new_ray.remove_placeholder_point(); // on peut retirer le placeholder car le vrai récepteur est maintenant connu
+                Ray new_ray(r);
+                rays_in_scope.push_back(new_ray); // très important de mettre cette commande après le changement de new_ray, sinon la copie pas modifiée est fournie à la suite
+                //std::cout << "this is a new ray" << std::endl; new_ray.print_path();
             }
 
-            std::cout << "rays_in_scope size: " << rays_in_scope.size() << std::endl;
+            //std::cout << "rays_in_scope size: " << rays_in_scope.size() << std::endl;
 
             for (int j = 0; j < rays_in_scope.size(); j++) { // traiter chaque rayon qui arrive au mur individuellement
 
-                std::cout << "this is ray " << j << std::endl;
+                //std::cout << "this is ray " << j << std::endl;
 
                 std::vector<double> r_copy = rays_in_scope[j].get_last_point(); // copie de r pour la récursion qui peut être modifiée par l'itération suivante
 
@@ -69,8 +68,8 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                 double dist = (diff[1] * (r_copy[0] - layout[i].getU()[0]) - diff[0] * (r_copy[1] - layout[i].getU()[1])) / (layout[i].getW()[0] * diff[1] - layout[i].getW()[1] * diff[0]);
                                                                                                                 // division par 0 ssi rayon parallèle au mur
 
-                std::cout << "dist: " << dist << std::endl;
-                std::cout << "produit de dotproduct: " << dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) << std::endl;
+                //std::cout << "dist: " << dist << std::endl;
+                //std::cout << "produit de dotproduct: " << dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) << std::endl;
 
                 if (0.0 < dist && dist < 1.0 // sinon la réflexion est invalide car en dehors du mur -> pas besoin de calculer plus de choses
                             && dotproduct(t_virtuel_rel, layout[i].getN()) * dotproduct(r_copy_rel, layout[i].getN()) < 0.0) { 
@@ -80,8 +79,8 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                     r_copy[0] = layout[i].getU()[0] + dist * layout[i].getW()[0]; // calculer le point de réflexion de cette itération-ci
                     r_copy[1] = layout[i].getU()[1] + dist * layout[i].getW()[1];
 
-                    std::cout << "r_copy: (" << r_copy[0] << ", " << r_copy[1] << ")" << std::endl;
-                    std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl;
+                    //std::cout << "r_copy: (" << r_copy[0] << ", " << r_copy[1] << ")" << std::endl;
+                    //std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl;
 
                     std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <math.h>
+#include <iostream>
 
 class Wall {
 
@@ -26,5 +27,6 @@ class Wall {
     std::vector<double> getW();
     std::vector<double> getN();
     int getType();
+    void print_wall_to_file(FILE *f);
 
 };

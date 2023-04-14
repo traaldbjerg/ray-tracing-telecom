@@ -10,11 +10,11 @@ int main() {
     
     // variables à fixer
     int h = 10; // nombre de pas par mètre
-    double Lx = 10.0;
-    double Ly = 10.0;
+    //double Lx = 10.0;
+    //double Ly = 10.0;
     double power = 0.0;
     std::vector<double> t(2); t[0] = -5.0 ; t[1] = 5.0; // coordonnées de l'émetteur
-    int recursion_depth = 5; // nombre de fois qu'on effectue la récursion
+    int recursion_depth = 10; // nombre de fois qu'on effectue la récursion
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays; // vecteur qui contiendra l'ensemble des rayons
     // initialiser layout
@@ -26,7 +26,7 @@ int main() {
     //std::cout << "hello x2" << std::endl;
     Wall wall1(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall1);
     Wall wall2(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall2);
-    //Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+    Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
     Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
     //std::cout << "hello x3" << std::endl;
     
@@ -37,7 +37,16 @@ int main() {
     //int q = layout.size(); // nombre de murs
 
     FILE *f_rays = fopen("rays.dat", "w");
+    FILE *f_walls = fopen("walls.dat", "w");
     FILE *f_power = fopen("power.dat", "w");
+
+    // placer les murs dans le fichier correspondant
+
+    for (int i = 0; i < layout.size(); i++) {
+        layout[i].print_wall_to_file(f_walls);
+    }
+
+    fclose(f_walls);
 
     // fonctions à appeler
 
@@ -52,8 +61,12 @@ int main() {
     }
 
     for (int i = 0; i < rays.size(); i++) {
+        rays[i].extend_path(t); // rajouter l'émetteur à la liste des points du rayon
         rays[i].print_path();
+        rays[i].print_path_to_file(f_rays);
     }
+
+
 
     fclose(f_rays);
 
@@ -74,6 +87,8 @@ int main() {
 
 
     // résultats à sortir (gnuplot?)
+
+    system("gnuplot -persist \"lines.gnu\"");
 
     
 

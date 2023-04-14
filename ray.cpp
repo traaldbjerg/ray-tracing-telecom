@@ -1,6 +1,6 @@
 #include "ray.hpp"
 
-Ray::Ray() {loss_factors = {1}; path = {{0,0}};} // vecteur nul en placeholder pour empecher les erreurs de segmentation, à retirer à la fin
+Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}};}
 
 Ray::~Ray() {}
 
@@ -26,6 +26,16 @@ void Ray::print_path() {
     }
 }
 
-void Ray::remove_placeholder_point() {
-    path.erase(path.begin());
+/*void Ray::print_loss_factors() {
+    for (int i = 0; i < loss_factors.size(); i++) {
+        std::cout << "Loss factor " << i << ": " << loss_factors[i] << std::endl;
+    }
+}*/
+
+void Ray::print_path_to_file(FILE *f) {
+    for (int i = 0; i < path.size(); i++) {
+        //f << path[i][0] << " " << path[i][1] << std::endl;
+        fprintf(f, "%f, %f\n", path[i][0], path[i][1]);
+    }
+    fprintf(f, "\n");
 }
