@@ -25,3 +25,17 @@ void Ray::print_path() {
         std::cout << "Point " << i << ": (" << path[i][0] << ", " << path[i][1] << ")" << std::endl;
     }
 }
+
+/*void Ray::print_loss_factors() {
+    for (int i = 0; i < loss_factors.size(); i++) {
+        std::cout << "Loss factor " << i << ": " << loss_factors[i] << std::endl;
+    }
+}*/
+
+void Ray::print_path_to_file(FILE *f) {
+    for (int i = 0; i < path.size(); i++) {
+        //f << path[i][0] << " " << path[i][1] << std::endl;
+        fprintf(f, "%f, %f\n", path[i][0], path[i][1]);
+    }
+    fprintf(f, "\n");
+}

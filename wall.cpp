@@ -74,4 +74,8 @@ int Wall::getType() {
     return type;
 }
 
+void Wall::print_wall_to_file(FILE *f) {
+    fprintf(f, "%f, %f\n%f, %f\n\n", u[0], u[1], v[0], v[1]);
+}
+
 //};

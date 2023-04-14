@@ -1,6 +1,6 @@
 #makefile pour le code de télécom, à modifier avec les différents éléments qu'on y rajoutera
 
-COPT = -O0 -Wall
+COPT = -O3 -Wall
 
 default: main
 

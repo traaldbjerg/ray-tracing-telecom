@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 class Ray {
     private:
@@ -14,4 +15,5 @@ class Ray {
         void extend_path(std::vector<double> new_point);
         std::vector<std::vector<double>> get_path();
         void print_path();
+        void print_path_to_file(FILE *f);
 };

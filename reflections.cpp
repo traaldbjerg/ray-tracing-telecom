@@ -50,11 +50,11 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                 //std::cout << "this is a new ray" << std::endl; new_ray.print_path();
             }
 
-            std::cout << "rays_in_scope size: " << rays_in_scope.size() << std::endl;
+            //std::cout << "rays_in_scope size: " << rays_in_scope.size() << std::endl;
 
             for (int j = 0; j < rays_in_scope.size(); j++) { // traiter chaque rayon qui arrive au mur individuellement
 
-                std::cout << "this is ray " << j << std::endl;
+                //std::cout << "this is ray " << j << std::endl;
 
                 std::vector<double> r_copy = rays_in_scope[j].get_last_point(); // copie de r pour la récursion qui peut être modifiée par l'itération suivante
 
@@ -68,8 +68,8 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                 double dist = (diff[1] * (r_copy[0] - layout[i].getU()[0]) - diff[0] * (r_copy[1] - layout[i].getU()[1])) / (layout[i].getW()[0] * diff[1] - layout[i].getW()[1] * diff[0]);
                                                                                                                 // division par 0 ssi rayon parallèle au mur
 
-                std::cout << "dist: " << dist << std::endl;
-                std::cout << "produit de dotproduct: " << dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) << std::endl;
+                //std::cout << "dist: " << dist << std::endl;
+                //std::cout << "produit de dotproduct: " << dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) << std::endl;
 
                 if (0.0 < dist && dist < 1.0 // sinon la réflexion est invalide car en dehors du mur -> pas besoin de calculer plus de choses
                             && dotproduct(t_virtuel_rel, layout[i].getN()) * dotproduct(r_copy_rel, layout[i].getN()) < 0.0) { 
@@ -79,8 +79,8 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                     r_copy[0] = layout[i].getU()[0] + dist * layout[i].getW()[0]; // calculer le point de réflexion de cette itération-ci
                     r_copy[1] = layout[i].getU()[1] + dist * layout[i].getW()[1];
 
-                    std::cout << "r_copy: (" << r_copy[0] << ", " << r_copy[1] << ")" << std::endl;
-                    std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl;
+                    //std::cout << "r_copy: (" << r_copy[0] << ", " << r_copy[1] << ")" << std::endl;
+                    //std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl;
 
                     std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 
