@@ -1,0 +1,6 @@
+git add -A
+
+git commit (écrire message)
+
+git push (origin HEAD:dev)
+
