@@ -1,9 +1,9 @@
 reset
-set title "Représentation des chemins de rayons possibles pour la disposition simplifiée"
+set title "Rayons possibles (max 2 réflexions) pour la disposition de l'exercice 8.1"
 set xlabel "x (m)"
 set ylabel "y (m)"
-set xrange [-6:12]
-set yrange [-2:12]
+set xrange [-6:86]
+set yrange [-6:86]
 #set palette defined (0 0 0 0.5, 1 0 0 1, 2 0 0.5 1, 3 0 1 1, 4 0.5 1 0.5, 5 1 1 0,  6 1 0.5 0, 7 1 0 0, 8 0.5 0 0)
 #do for [mode in "min"] { # pour des petits pas de discrétisation, permet que la fenêtre soit à la bonne couleur
 #                         # mais alors porte pas à la bonne couleur :(
