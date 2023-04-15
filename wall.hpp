@@ -4,6 +4,10 @@
 #include <iostream>
 
 class Wall {
+    // classe mur, reprend les propriétés des murs (position, épaisseur, permittivité, conductivité)
+    // se charge également de donner le coefficient de réflexion et de transmission en fonction de l'angle d'incidence d'un rayon
+
+    // attributs
 
     private:
     std::vector<double> u; // première extrémité du mur
@@ -16,6 +20,7 @@ class Wall {
     double eps_rel;
     double sigma;
 
+    // méthodes
     
     public:
     Wall(double ux, double uy, double vx, double vy, int t);
