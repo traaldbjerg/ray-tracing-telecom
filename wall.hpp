@@ -8,7 +8,6 @@ class Wall {
     // se charge également de donner le coefficient de réflexion et de transmission en fonction de l'angle d'incidence d'un rayon
 
     // attributs
-
     private:
     std::vector<double> u; // première extrémité du mur
     std::vector<double> v; // 2e extrémité du mur
@@ -21,7 +20,6 @@ class Wall {
     double sigma;
 
     // méthodes
-    
     public:
     Wall(double ux, double uy, double vx, double vy, int t);
     //~Wall();
@@ -33,5 +31,4 @@ class Wall {
     std::vector<double> getN();
     int getType();
     void print_wall_to_file(FILE *f);
-
 };
