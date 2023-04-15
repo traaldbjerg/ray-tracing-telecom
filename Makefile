@@ -1,4 +1,4 @@
-#makefile pour le code de télécom, à modifier avec les différents éléments qu'on y rajoutera
+# makefile pour le code de télécom, à modifier avec les différents éléments qu'on y rajoutera
 
 COPT = -O3 -Wall
 

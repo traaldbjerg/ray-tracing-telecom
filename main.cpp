@@ -21,7 +21,7 @@ int main()
     std::vector<double> t(2); t[0] = -5; t[1] = 7; // coordonnées de l'émetteur
     std::vector<double> r(2); r[0] = 5; r[1] = 3; // coordonnées du récepteur
 
-    int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
+    int recursion_depth = 10; // nombre de fois qu'on effectue la récursion
 
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays;    // vecteur qui contiendra l'ensemble des rayons
@@ -54,8 +54,7 @@ int main()
 
     // placer les murs dans le fichier correspondant
 
-    for (int i = 0; i < layout.size(); i++)
-    {
+    for (int i = 0; i < layout.size(); i++) {
         layout[i].print_wall_to_file(f_walls);
     }
 
@@ -65,17 +64,14 @@ int main()
 
     // boucle pour un récepteur unique, tracer les rayons
 
-    for (int k = recursion_depth; k > 0; k--)
-    {                                                                    // d'abord max de réflexions puis ... puis 1 interaction puis 0
+    for (int k = recursion_depth; k > 0; k--) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
         compute_reflections(*f_rays, layout, 100, t, r, k, power, rays); // 100 en placeholder, fonctionne tant qu'il y a moins de 100 murs
     }
 
-    Ray direct_ray(r);
-    direct_ray.extend_path(t);
+    Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
     rays.push_back(direct_ray); // rajouter le rayon direct
 
-    for (int i = 0; i < rays.size(); i++)
-    {                                       // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
+    for (int i = 0; i < rays.size(); i++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
         rays[i].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
         rays[i].print_path();               // debug
         rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
