@@ -1,4 +1,4 @@
-# Version 16/04/2023:
+# Version 16/04/2023 :
 
 ## Disposition à 7 murs, 9 couches de récursion, récepteur unique :
 
@@ -9,8 +9,6 @@
 ### Temps de calcul avec recherche de transmissions :
 
 - CPU : 22.7297 s
-
-
 
 ## Disposition à 7 murs, 4 couches de récursion, puissance de toute la zone :
 
@@ -24,3 +22,16 @@
 
 La recherche de transmissions ne semble donc pas impliquer un temps de calcul particulièrement supérieur !
 
+## Disposition de l'usine
+
+### 6 couches de récursion, récepteur unique :
+
+CPU : 361.642 s
+
+### 2 couches de récursion, toute l'usine (100 points par mètre carré) :
+
+CPU : 625.688 s
+
+### 3 couches de récursion, toute l'usine (1 point par mètre carré) :
+
+CPU : 142.95 s

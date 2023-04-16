@@ -14,18 +14,11 @@ int main()
     // paramètres d'exécution du programme
 
     const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
-    const int recursion_depth = 4; // nombre de fois qu'on effectue la récursion
-
-    // variables à fixer
-
-    const double h = 10; // nombre de pas par mètre
-    const double Lx = 10.0;
-    const double Ly = 10.0;
-    double power = 0.0;
+    const int recursion_depth = 3; // nombre de fois qu'on effectue la récursion
 
     // std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
     // std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
-    std::vector<double> t(2); t[0] = -5; t[1] = 5; // coordonnées de l'émetteur
+    std::vector<double> t(2); t[0] = -5; t[1] = -5; // coordonnées de l'émetteur
     std::vector<double> r(2);
     
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
@@ -41,13 +34,43 @@ int main()
     //Wall wall2(0.0, 20.0, 80.0, 20.0, 2); layout.push_back(wall2);
     //Wall wall3(0.0, 80.0, 80.0, 80.0, 2); layout.push_back(wall3);
     // disposition à 4 murs
-    const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1);
-    const Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);
-    const Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
-    const Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
-    const Wall wall5(4, 3, 6, 5, 2); layout.push_back(wall5);
-    const Wall wall6(4, 3, 6, 9, 2); layout.push_back(wall6);
-    const Wall wall7(4, 3, 6, 1, 2); layout.push_back(wall7);
+    //const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1);
+    //const Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);
+    //const Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+    //const Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
+    //const Wall wall5(4, 3, 6, 5, 2); layout.push_back(wall5);
+    //const Wall wall6(4, 3, 6, 9, 2); layout.push_back(wall6);
+    //const Wall wall7(4, 3, 6, 1, 2); layout.push_back(wall7);
+    // layout de l'usine
+    // murs en brique
+    const Wall wall1(0, 0, 100, 0, 1); layout.push_back(wall1);
+    const Wall wall2(0, 0, 0, -45, 1); layout.push_back(wall2);
+    const Wall wall3(100, 0, 100, -70, 1); layout.push_back(wall3);
+    const Wall wall4(85, 0, 85, -12.8398, 1); layout.push_back(wall4);
+    const Wall wall5(85, -14.8398, 85, -27.6795, 1); layout.push_back(wall5);
+    const Wall wall6(85, -27.6795, 91.5, -27.6795, 1); layout.push_back(wall6);
+    const Wall wall7(93.5, -27.6795, 100, -27.6795, 1); layout.push_back(wall7);
+    const Wall wall8(85, -27.6795, 75, -45, 1); layout.push_back(wall8);
+    // murs en béton
+    const Wall wall9(0, -45, 75, -45, 2); layout.push_back(wall9);
+    const Wall wall10(75, -45, 75, -70, 2); layout.push_back(wall10);
+    const Wall wall11(75, -70, 100, -70, 2); layout.push_back(wall11);
+    // cloisons
+    const Wall wall12(0, -9, 15, -9, 3); layout.push_back(wall12);
+    const Wall wall13(0, -18, 15, -18, 3); layout.push_back(wall13);
+    const Wall wall14(0, -27, 15, -27, 3); layout.push_back(wall14);
+    const Wall wall15(0, -36, 15, -36, 3); layout.push_back(wall15);
+    const Wall wall16(15, 0, 15, -4, 3); layout.push_back(wall16);
+    const Wall wall17(15, -5, 15, -13, 3); layout.push_back(wall17);
+    const Wall wall18(15, -14, 15, -22, 3); layout.push_back(wall18);
+    const Wall wall19(15, -23, 15, -31, 3); layout.push_back(wall19);
+    const Wall wall20(15, -32, 15, -40, 3); layout.push_back(wall20);
+    const Wall wall21(15, -41, 15, -45, 3); layout.push_back(wall21);
+    const Wall wall22(40, -15, 35, -20, 3); layout.push_back(wall22);
+    const Wall wall23(35, -30, 40, -35, 3); layout.push_back(wall23);
+    const Wall wall24(50, -15, 55, -20, 3); layout.push_back(wall24);
+    const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
+
 
     // int q = layout.size(); // nombre de murs
 
@@ -67,7 +90,7 @@ int main()
 
     if (compute_power == 0) {
 
-        r[0] = 5; r[1] = 5; // coordonnées du récepteur
+        r[0] = 50; r[1] = -40; // coordonnées du récepteur
 
         FILE *f_rays = fopen("rays.dat", "w");
 
@@ -84,7 +107,7 @@ int main()
             //rays[i].print_loss_factors();       // debug
             rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
             //rays[i].print_walls_hit();          // debug
-            find_transmissions(rays[i], layout); // trouver les transmissions
+            //find_transmissions(rays[i], layout); // trouver les transmissions
             //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
         }
 
@@ -98,6 +121,11 @@ int main()
 
     if (compute_power == 1) {
 
+        const double h = 1; // nombre de pas par mètre
+        const double Lx = 100.0;
+        const double Ly = 75.0;
+        double power = 0.0;
+
         double progress_save = -1; // -1 pour être sûr que la barre est affichée immédiatement
 
         FILE *f_power = fopen("power.dat", "w");
@@ -105,31 +133,34 @@ int main()
         for (int i = 0; i <= Lx * h; i++) { // itère d'abord verticalement, colonne par colonne
             r[0] = i/h;
             for(int j = 0 ; j < Ly * h ; j++) {
-                r[1] = j/h;
+                r[1] = -j/h;
+
+                if (!(r[1] < -45 && r[0] < 75)) {  // si le récepteur est dans la pièce, on calcule la puissance
                 
-                power = 0;
-                for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
-                    compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
-                }
+                    power = 0;
+                    for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+                        compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
+                    }
 
-                if ((double (i / (Lx*h))) > (progress_save + 0.005)) { // pour ne pas faire du in/out (très lent) quand le résultat n'a pas changé
-                    progress_save = double (i / (Lx*h));
-                    printProgress(progress_save); // afficher l'avancement de la boucle
-                }
+                    if ((double (i / (Lx*h))) > (progress_save + 0.005)) { // pour ne pas faire du in/out (très lent) quand le résultat n'a pas changé
+                        progress_save = double (i / (Lx*h));
+                        printProgress(progress_save); // afficher l'avancement de la boucle
+                    }
 
-                Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
-                rays.push_back(direct_ray); // rajouter le rayon direct
+                    Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
+                    rays.push_back(direct_ray); // rajouter le rayon direct
 
-                for (int l = 0; l < rays.size(); l++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
-                    rays[l].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
-                    //rays[l].print_path();               // debug
-                    //rays[l].print_loss_factors();       // debug
-                    //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
-                    find_transmissions(rays[l], layout); // trouver les transmissions
-                    power += rays[l].compute_power();
+                    for (int l = 0; l < rays.size(); l++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
+                        rays[l].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
+                        //rays[l].print_path();               // debug
+                        //rays[l].print_loss_factors();       // debug
+                        //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
+                        find_transmissions(rays[l], layout); // trouver les transmissions
+                        power += rays[l].compute_power();
+                    }
+                    rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
+                    fprintf(f_power, "%f %f %f\n", r[0], r[1], power);
                 }
-                rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
-                fprintf(f_power, "%f %f %f\n", r[0], r[1], power);
             }
             fprintf(f_power, "\n"); // pour respecter le format gnuplot
         }
