@@ -126,7 +126,7 @@ int main()
                     //rays[l].print_path();               // debug
                     //rays[l].print_loss_factors();       // debug
                     //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
-                    //find_transmissions(rays[l], layout); // trouver les transmissions
+                    find_transmissions(rays[l], layout); // trouver les transmissions
                     power += rays[l].compute_power();
                 }
                 rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
