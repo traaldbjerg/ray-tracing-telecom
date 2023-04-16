@@ -50,13 +50,13 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                 compute_reflections(f, layout, i, t_virtuel, r, rec_depth - 1, d, rays_in_scope); // récursion
             } else {
                 Ray new_ray(r);
-                rays_in_scope.push_back(new_ray); // très important de mettre cette commande après le changement de new_ray, sinon la copie pas modifiée est fournie à la suite
+                rays_in_scope.push_back(new_ray);
                 //std::cout << "this is a new ray" << std::endl; new_ray.print_path(); // debug
             }
 
             //std::cout << "rays_in_scope size: " << rays_in_scope.size() << std::endl; // debug
 
-            for (int j = 0; j < rays_in_scope.size(); j++) { // traiter chaque rayon qui arrive au mur individuellement
+            for (int j = 0; j < rays_in_scope.size(); j++) { // traiter chaque rayon qui arrive au mur individuellement, et éliminer tous ceux qui correspondent à des combinaisons de murs impossibles
 
                 //std::cout << "this is ray " << j << std::endl; // debug
 
@@ -89,7 +89,7 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                     std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 
                     rays_in_scope[j].extend_path(r_copy);
-                    rays_in_scope[j].add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN())));
+                    rays_in_scope[j].add_loss_factor(layout[i].getRcoef(abs(normalised_dotproduct(ray_segment, layout[i].getN())))); // ajouter le facteur de perte de puissance
                 }
 
                     // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?

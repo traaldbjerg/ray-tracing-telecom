@@ -21,4 +21,5 @@ class Ray {
         std::vector<std::vector<double>> get_path(); // retourne l'ensemble des extrémités des segments du rayon
         void print_path(); // debug
         void print_path_to_file(FILE *f); // écrit l'ensemble des extrémités des segments du rayon dans le fichier f, pour plotter avec gnuplot
+        void print_loss_factors(); // debug
 };

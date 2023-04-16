@@ -26,11 +26,13 @@ void Ray::print_path() { // debug
     }
 }
 
-/*void Ray::print_loss_factors() {
+void Ray::print_loss_factors() {
+    std::cout << "Loss factors : ";
     for (int i = 0; i < loss_factors.size(); i++) {
-        std::cout << "Loss factor " << i << ": " << loss_factors[i] << std::endl;
+        std::cout << loss_factors[i] << " ";
     }
-}*/
+    std::cout << std::endl;
+}
 
 void Ray::print_path_to_file(FILE *f) { // écrit l'ensemble des extrémités des segments du rayon dans le fichier f, pour plotter avec gnuplot
     for (int i = 0; i < path.size(); i++) {
