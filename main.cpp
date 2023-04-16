@@ -13,7 +13,7 @@ int main()
     // paramètres d'exécution du programme
 
     const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
-    //const int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
+    const int recursion_depth = 5; // nombre de fois qu'on effectue la récursion
 
 
     // variables à fixer
@@ -71,7 +71,7 @@ int main()
 
         FILE *f_rays = fopen("rays.dat", "w");
 
-        for (int k = 1; k < REC_DEPTH; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+        for (int k = 1; k < recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
             compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
         }
 
@@ -80,23 +80,25 @@ int main()
 
         for (int i = 0; i < rays.size(); i++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
             rays[i].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
-            rays[i].print_path();               // debug
-            rays[i].print_loss_factors();       // debug
+            //rays[i].print_path();               // debug
+            //rays[i].print_loss_factors();       // debug
             rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
-            printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
+            //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
         }
 
         fclose(f_rays);
 
-        system("gnuplot -persist \"lines.gnu\"");
+        system("gnuplot -persist \"lines.gnu\""); // afficher les rayons
 
     }
+
+
 
     // boucle pour l'entièreté de la grille, calculer la puissance
 
     if (compute_power == 1) {
 
-        double progress_save = -1; // -1 pour être sûr que la barre sera affichée immédiatement
+        double progress_save = -1; // -1 pour être sûr que la barre est affichée immédiatement
 
         FILE *f_power = fopen("power.dat", "w");
         // boucle pour toutes les positions de récepteur, plotter la puissance sur une grille
@@ -106,7 +108,7 @@ int main()
                 r[1] = j/h;
                 
                 power = 0;
-                for (int k = 1; k < REC_DEPTH; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+                for (int k = 1; k < recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
                     compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
                 }
 
@@ -114,8 +116,6 @@ int main()
                     progress_save = double (i / (Lx*h));
                     printProgress(progress_save); // afficher l'avancement de la boucle
                 }
-
-                
 
                 Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
                 rays.push_back(direct_ray); // rajouter le rayon direct
@@ -135,7 +135,7 @@ int main()
         
         fclose(f_power);
 
-        system("gnuplot -persist \"heatmap.gnu\"");
+        system("gnuplot -persist \"heatmap.gnu\""); // afficher la puissance sur une grille
 
     }
 

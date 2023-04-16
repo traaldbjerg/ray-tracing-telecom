@@ -1,6 +1,6 @@
 #include "reflections.hpp"
 
-void compute_reflections(std::vector<Wall> layout, int previous_wall_index, std::vector<double> t, std::vector<double> r,
+void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std::vector<double> t, std::vector<double> r,
  int remaining_rec_depth, std::vector<Ray> &rays) {
 
     // calcule les réflexions successives d'un rayon jusqu'au récepteur en récursion en partant du récepteur,
@@ -92,15 +92,15 @@ void compute_reflections(std::vector<Wall> layout, int previous_wall_index, std:
 
                     rays_in_scope[j].extend_path(r_copy);
                     rays_in_scope[j].add_loss_factor(layout[i].getRcoef(fabs(normalised_dotproduct(ray_segment, layout[i].getN())))); // ajouter le facteur de perte de puissance
+                    rays_in_scope[j].add_wall_hit(i); // ajouter le mur à la liste des murs sur lesquels le rayon rebondit
                 }
 
                     // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
 
                 else { // rebond invalide -> retirer le rayon de la liste des rayons à traiter
                     rays_in_scope.erase(rays_in_scope.begin() + j);
-                    j--; // pour ne pas sauter un rayon puisque a liste est réduite de 1 après délétion
+                    j--; // pour ne pas sauter un rayon puisque la liste est réduite de 1 après délétion
                 }
-            
             }
 
             for (int j = 0; j < rays_in_scope.size(); j++) { // ajouter les rayons à la liste des rayons qui sera fournie au scope supérieur
