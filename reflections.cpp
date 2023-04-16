@@ -91,7 +91,7 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
                     std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 
                     rays_in_scope[j].extend_path(r_copy);
-                    rays_in_scope[j].add_loss_factor(layout[i].getRcoef(fabs(normalised_dotproduct(ray_segment, layout[i].getN())))); // ajouter le facteur de perte de puissance
+                    rays_in_scope[j].add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN()))); // ajouter le facteur de perte de puissance
                     rays_in_scope[j].add_wall_hit(i); // ajouter le mur à la liste des murs sur lesquels le rayon rebondit
                 }
 

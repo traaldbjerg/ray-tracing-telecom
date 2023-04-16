@@ -3,6 +3,7 @@
 #include <cmath>
 #include "common.hpp"
 #include "reflections.hpp"
+#include "transmissions.hpp"
 #include "time.hpp"
 
 int main()
@@ -13,7 +14,7 @@ int main()
     // paramètres d'exécution du programme
 
     const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
-    const int recursion_depth = 5; // nombre de fois qu'on effectue la récursion
+    const int recursion_depth = 4; // nombre de fois qu'on effectue la récursion
 
 
     // variables à fixer
@@ -71,7 +72,7 @@ int main()
 
         FILE *f_rays = fopen("rays.dat", "w");
 
-        for (int k = 1; k < recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+        for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
             compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
         }
 
@@ -83,6 +84,8 @@ int main()
             //rays[i].print_path();               // debug
             //rays[i].print_loss_factors();       // debug
             rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
+            //rays[i].print_walls_hit();          // debug
+            find_transmissions(rays[i], layout); // trouver les transmissions
             //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
         }
 
@@ -91,8 +94,6 @@ int main()
         system("gnuplot -persist \"lines.gnu\""); // afficher les rayons
 
     }
-
-
 
     // boucle pour l'entièreté de la grille, calculer la puissance
 
@@ -108,7 +109,7 @@ int main()
                 r[1] = j/h;
                 
                 power = 0;
-                for (int k = 1; k < recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+                for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
                     compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
                 }
 
@@ -125,6 +126,7 @@ int main()
                     //rays[l].print_path();               // debug
                     //rays[l].print_loss_factors();       // debug
                     //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
+                    //find_transmissions(rays[l], layout); // trouver les transmissions
                     power += rays[l].compute_power();
                 }
                 rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)

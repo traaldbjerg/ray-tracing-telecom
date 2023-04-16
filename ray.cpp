@@ -1,6 +1,6 @@
 #include "ray.hpp"
 
-Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}};} // constructeur
+Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}}; walls_hit = {100};} // constructeur, 100 en placeholder
 
 Ray::~Ray() {} // destructeur
 
@@ -29,7 +29,11 @@ double Ray::compute_power() { // calcule le facteur de perte total du rayon
 }
 
 void Ray::add_wall_hit(int wall_index) { // rajoute un mur dans la liste des murs touchés, permet de ne pas vérifier les intersections avec des murs déjà touchés lorsqu'on cherche les transmissions
-    wall_hit.push_back(wall_index);
+    walls_hit.push_back(wall_index);
+}
+
+std::vector<int> Ray::get_walls_hit() { // retourne la liste des murs touchés par le rayon
+    return walls_hit;
 }
 
 void Ray::print_path() { // debug
@@ -51,4 +55,12 @@ void Ray::print_path_to_file(FILE *f) { // écrit l'ensemble des extrémités de
         fprintf(f, "%f, %f\n", path[i][0], path[i][1]);
     }
     fprintf(f, "\n");
+}
+
+void Ray::print_walls_hit() {
+    std::cout << "Walls hit : ";
+    for (int i = 0; i < walls_hit.size(); i++) {
+        std::cout << walls_hit[i] << " ";
+    }
+    std::cout << std::endl;
 }

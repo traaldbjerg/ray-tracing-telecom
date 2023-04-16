@@ -12,7 +12,7 @@ double normalised_dotproduct(std::vector<double> u, std::vector<double> v) { // 
     res += u[0] * v[0];
     res += u[1] * v[1];
     double norm = sqrt(u[0] * u[0] + u[1] * u[1]); res /= norm; norm = sqrt(v[0] * v[0] + v[1] * v[1]); res /= norm;
-    return res;
+    return fabs(res);
 }
 
 // pompé de https://stackoverflow.com/questions/15311018/c-procedure-for-determining-whether-two-segments-intersect
