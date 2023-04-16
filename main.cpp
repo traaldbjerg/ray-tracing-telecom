@@ -16,7 +16,6 @@ int main()
     const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
     const int recursion_depth = 4; // nombre de fois qu'on effectue la récursion
 
-
     // variables à fixer
 
     const double h = 10; // nombre de pas par mètre
@@ -33,14 +32,14 @@ int main()
     std::vector<Ray> rays;    // vecteur qui contiendra l'ensemble des rayons
 
     // initialiser layout
-    // layout.emplace_back(0.0, 0.0, 10.0, 0.0, 2);
-    // layout.emplace_back(0.0, 0.0, 0.0, 10.0, 2);
-    // layout.emplace_back(0.0, 10.0, 10.0, 10.0, 2);
-    // layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
+    //layout.emplace_back(0.0, 0.0, 10.0, 0.0, 2);
+    //layout.emplace_back(0.0, 0.0, 0.0, 10.0, 2);
+    //layout.emplace_back(0.0, 10.0, 10.0, 10.0, 2);
+    //layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
     // disposition de l'exo 8.1
-    // Wall wall1(0.0, 0.0, 0.0, 80.0, 2); layout.push_back(wall1);
-    // Wall wall2(0.0, 20.0, 80.0, 20.0, 2); layout.push_back(wall2);
-    // Wall wall3(0.0, 80.0, 80.0, 80.0, 2); layout.push_back(wall3);
+    //Wall wall1(0.0, 0.0, 0.0, 80.0, 2); layout.push_back(wall1);
+    //Wall wall2(0.0, 20.0, 80.0, 20.0, 2); layout.push_back(wall2);
+    //Wall wall3(0.0, 80.0, 80.0, 80.0, 2); layout.push_back(wall3);
     // disposition à 4 murs
     const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1);
     const Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);

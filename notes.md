@@ -20,10 +20,7 @@
 
 ### Temps de calcul avec recherche de transmissions :
 
-- CPU : 34.5444 s
+- CPU : 34.5444 s, 28.5443 s,  29.7472 s ...
 
-La recherche de transmissions implique donc bien un temps de calcul considérable :(
-
-
-
+La recherche de transmissions ne semble donc pas impliquer un temps de calcul particulièrement supérieur !
 

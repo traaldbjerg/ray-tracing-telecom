@@ -22,8 +22,7 @@ void find_transmissions(Ray &ray, std::vector<Wall> &layout) { // cherche les in
     std::vector<std::vector<double>> path = ray.get_path(); // récupère le chemin du rayon
     ray.add_wall_hit(WALL_PLACEHOLDER); // ajoute un mur en placeholder pour le dernier segment du rayon
     std::vector<int> walls_hit = ray.get_walls_hit(); // récupère les murs déjà touchés par le rayon
-    int q = path.size() - 1; // nombre de segments du rayon
-    for (int segment = 0; segment < q; segment++) { // pour chaque segment du rayon
+    for (int segment = 0; segment < path.size() - 1; segment++) { // pour chaque segment du rayon
         for (int i = 0; i < layout.size(); i++) { // pour chaque mur de layout
             if (i != walls_hit[segment] || i != walls_hit[segment + 1]) { // ne pas considérer les murs entre lesquels le segment se reflète
                 //std::vector<double> intersection = find_intersection(path[segment], path[segment + 1], layout[i]); // cherche l'intersection entre le segment et le mur

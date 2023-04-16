@@ -86,7 +86,7 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
                     r_copy[1] = layout[i].getU()[1] + dist * layout[i].getW()[1];
 
                     //std::cout << "r_copy: (" << r_copy[0] << ", " << r_copy[1] << ")" << std::endl; // debug
-                    //std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl; // debug
+                    //std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl; // debug 
 
                     std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 
