@@ -28,6 +28,10 @@ double Ray::compute_power() { // calcule le facteur de perte total du rayon
     return fabs(loss); // fabs pour float et pas abs qui traite les int
 }
 
+void Ray::add_wall_hit(int wall_index) { // rajoute un mur dans la liste des murs touchés, permet de ne pas vérifier les intersections avec des murs déjà touchés lorsqu'on cherche les transmissions
+    wall_hit.push_back(wall_index);
+}
+
 void Ray::print_path() { // debug
     for (int i = 0; i < path.size(); i++) {
         std::cout << "Point " << i << ": (" << path[i][0] << ", " << path[i][1] << ")" << std::endl; // debug
