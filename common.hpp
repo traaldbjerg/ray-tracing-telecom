@@ -3,3 +3,5 @@
 #include <vector>
 #include "wall.hpp"
 #include "ray.hpp"
+#define WALL_PLACEHOLDER 100
+#define REC_DEPTH 5

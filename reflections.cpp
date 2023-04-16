@@ -1,18 +1,20 @@
 #include "reflections.hpp"
 
-void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_index, std::vector<double> t, std::vector<double> r,
- int rec_depth, double &d, std::vector<Ray> &rays) {
+void compute_reflections(std::vector<Wall> layout, int previous_wall_index, std::vector<double> t, std::vector<double> r,
+ int remaining_rec_depth, std::vector<Ray> &rays) {
 
     // calcule les réflexions successives d'un rayon jusqu'au récepteur en récursion en partant du récepteur,
     // où toutes les combinaisons de murs instancient un rayon, puis remonte les couches de récursion en supprimant les rayons
     // qui ne sont pas associés à des combinaisons de murs possibles
 
     // layout ensemble des murs du plan ; previous_wall_index l'index du mur précédent (pour éviter 2 réflexions consécutives sur le même mur)
-    // r les coordonnées du récepteur; t les coordonnées de l'émetteur (virtuel ou non); rec_depth profondeur de récursion;
+    // r les coordonnées du récepteur; t les coordonnées de l'émetteur (virtuel ou non); remaining_rec_depth profondeur de récursion;
     // d distance parcourue par le rayon (potentiellement à changer); rays ensemble des rayons
     // trouver les n-uples de murs qui permettent les réflexions successives jusqu'au récepteur
 
     for (int i = 0; i < layout.size() ; i++) { // itère sur les murs
+
+        //if (previous_wall_index == WALL_PLACEHOLDER) {printProgress((double) (i / layout.size() + remaining_rec_depth)/REC_DEPTH) ;} // imprimer la barre de progression ssi on est dans la 1e couche de récursion
 
         if (i == previous_wall_index) {} //{std::cout << "this is a jump" << std::endl;} // sauter le mur sur lequel on s'est reflété précédemment
 
@@ -46,8 +48,8 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
 
             //std::vector<double> r_copy = r; // copie de r pour la récursion qui peut être modifiée par l'itération suivante
                 
-            if (rec_depth > 1) {
-                compute_reflections(f, layout, i, t_virtuel, r, rec_depth - 1, d, rays_in_scope); // récursion
+            if (remaining_rec_depth > 1) {
+                compute_reflections(layout, i, t_virtuel, r, remaining_rec_depth - 1, rays_in_scope); // récursion
             } else {
                 Ray new_ray(r);
                 rays_in_scope.push_back(new_ray);
@@ -89,7 +91,7 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
                     std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
 
                     rays_in_scope[j].extend_path(r_copy);
-                    rays_in_scope[j].add_loss_factor(layout[i].getRcoef(abs(normalised_dotproduct(ray_segment, layout[i].getN())))); // ajouter le facteur de perte de puissance
+                    rays_in_scope[j].add_loss_factor(layout[i].getRcoef(fabs(normalised_dotproduct(ray_segment, layout[i].getN())))); // ajouter le facteur de perte de puissance
                 }
 
                     // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
@@ -110,7 +112,7 @@ void compute_reflections(FILE f, std::vector<Wall> layout, int previous_wall_ind
             else { // transmission
 
                 // calculer la perte de puissance ici
-                if (rec_depth > 1) compute_reflections(f, layout, t, r, rec_depth - 1, d); // récursion
+                if (remaining_rec_depth > 1) compute_reflections(f, layout, t, r, remaining_rec_depth - 1, d); // récursion
             }*/
         }
     }
