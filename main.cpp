@@ -126,7 +126,7 @@ int main() {
 
         const double h = 10; // nombre de pas par mètre
         const double Lx = 100.0;
-        const double Ly = 75.0;
+        const double Ly = 70.0;
         double power = 0.0;
 
         double progress_save = -1; // -1 pour être sûr que la barre est affichée immédiatement

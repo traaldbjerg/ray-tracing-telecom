@@ -1,4 +1,5 @@
 reset
+set pm3d explicit
 set pm3d map
 set title "Puissance moyenne du champ électromagnétique dans la pièce (pas d'unités cohérentes actuellement)"
 set xlabel "x (m)"
@@ -6,10 +7,10 @@ set ylabel "y (m)"
 set zlabel "Puissance (pas d'unités cohérentes actuellement)"
 set xrange [-10:105]
 set yrange [-80:5]
-set zrange [-130:20]
+set zrange [-135:20]
 set palette defined (0 0 0 0.5, 1 0 0 1, 2 0 0.5 1, 3 0 1 1, 4 0.5 1 0.5, 5 1 1 0,  6 1 0.5 0, 7 1 0 0, 8 0.5 0 0)
-do for [mode in "min"] { # pour des petits pas de discrétisation, permet que la fenêtre soit à la bonne couleur
+#do for [mode in "min"] { # pour des petits pas de discrétisation, permet que la fenêtre soit à la bonne couleur
                          # mais alors porte pas à la bonne couleur :(
-    eval "set pm3d corners2color ".mode
-    splot "power.dat" using 1:2:3 with pm3d#, plot 'walls.dat' w lp
-}
+    #eval "set pm3d corners2color ".mode
+    splot "power.dat" using 1:2:3 with pm3d, "walls.dat" using 1:2:(-100) w lines
+#}
