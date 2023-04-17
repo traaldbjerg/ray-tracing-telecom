@@ -8,7 +8,7 @@ clean:
 	rm *.o 
 	rm main
 
-main: main.cpp wall.o dotproduct.o reflections.o ray.o time.o progressbar.o transmissions.o
+main: main.cpp wall.o dotproduct.o reflections.o ray.o time.o progressbar.o transmissions.o rcoef.o distance.o
 	g++ -g $(COPT) $^ -o $@
 
 %.o: %.cpp

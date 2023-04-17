@@ -36,6 +36,12 @@ std::vector<int> Ray::get_walls_hit() { // retourne la liste des murs touchés p
     return walls_hit;
 }
 
+//void Ray::add_all_loss_factors(std::vector<Wall> &layout) { // rajoute tous les facteurs de perte d'un vecteur dans la liste des facteurs de perte du rayon
+//    for (int i = 0; i < walls_hit.size(); i++) {
+//        this.add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN())));
+//    }
+//}
+
 void Ray::print_path() { // debug
     for (int i = 0; i < path.size(); i++) {
         std::cout << "Point " << i << ": (" << path[i][0] << ", " << path[i][1] << ")" << std::endl; // debug

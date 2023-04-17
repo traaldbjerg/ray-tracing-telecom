@@ -5,16 +5,17 @@
 #include "reflections.hpp"
 #include "transmissions.hpp"
 #include "time.hpp"
+#include "rcoef.hpp"
+#include "distance.hpp"
 
-int main()
-{
+int main() {
 
     // std::cout << "hello this is main" << std::endl; // debug
 
     // paramètres d'exécution du programme
 
     const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
-    const int recursion_depth = 3; // nombre de fois qu'on effectue la récursion
+    const int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
 
     // std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
     // std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
@@ -107,7 +108,9 @@ int main()
             //rays[i].print_loss_factors();       // debug
             rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
             //rays[i].print_walls_hit();          // debug
-            //find_transmissions(rays[i], layout); // trouver les transmissions
+            find_transmissions(rays[i], layout); // trouver les transmissions
+            compute_distance(rays[i]); // calculer la distance parcourue par le rayon
+            add_Rcoefs(rays[i], layout); // ajouter les coefficients de réflexion
             //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
         }
 
@@ -121,7 +124,7 @@ int main()
 
     if (compute_power == 1) {
 
-        const double h = 1; // nombre de pas par mètre
+        const double h = 10; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 75.0;
         double power = 0.0;
@@ -156,10 +159,12 @@ int main()
                         //rays[l].print_loss_factors();       // debug
                         //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
                         find_transmissions(rays[l], layout); // trouver les transmissions
+                        compute_distance(rays[l]); // calculer la distance parcourue par le rayon
+                        add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
                         power += rays[l].compute_power();
                     }
                     rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
-                    fprintf(f_power, "%f %f %f\n", r[0], r[1], power);
+                    fprintf(f_power, "%f %f %f\n", r[0], r[1], 20 * log10(power/1000));
                 }
             }
             fprintf(f_power, "\n"); // pour respecter le format gnuplot

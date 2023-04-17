@@ -18,6 +18,7 @@ class Ray {
         Ray(std::vector<double> r); // constructeur
         ~Ray(); // destructeur
         void add_loss_factor(double factor); // rajouter un facteur de perte dans la liste
+        //void add_all_loss_factors(std::vector<Wall> &layout); // rajoute tous les facteurs de perte d'un vecteur dans la liste des facteurs de perte du rayon
         double compute_power(); // calcule le facteur de perte total du rayon
         void add_wall_hit(int wall_index); // rajoute un mur dans la liste des murs touchés
         std::vector<int> get_walls_hit(); // retourne la liste des murs touchés par le rayon
