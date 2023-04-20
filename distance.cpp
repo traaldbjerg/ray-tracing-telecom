@@ -7,5 +7,5 @@ void compute_distance(Ray &ray) {
         std::vector<double> ray_segment = {path[i + 1][0] - path[i][0], path[i + 1][1] - path[i][1]};
         distance += sqrt(ray_segment[0]*ray_segment[0] + ray_segment[1]*ray_segment[1]);
     }
-    ray.add_loss_factor(1/distance);
+    ray.add_loss_factor(exp(std::complex<double> (0, -distance * OMEGA / CELERITY))/distance);
 }

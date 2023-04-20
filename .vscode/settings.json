@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.m": "matlab",
         "vector": "cpp",
         "array": "cpp",
         "*.tcc": "cpp",
@@ -46,6 +47,7 @@
         "memory": "cpp",
         "memory_resource": "cpp",
         "numeric": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "complex": "cpp"
     }
 }

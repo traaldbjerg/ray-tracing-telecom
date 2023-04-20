@@ -16,16 +16,20 @@ std::vector<double> Ray::get_last_point() { // retourne le dernier point du rayo
     return path.back();
 }
 
+void Ray::add_loss_factor(std::complex<double> factor) { // rajouter un facteur de perte dans la liste
+    loss_factors.push_back(factor);
+}
+
 void Ray::add_loss_factor(double factor) { // rajouter un facteur de perte dans la liste
     loss_factors.push_back(factor);
 }
 
-double Ray::compute_power() { // calcule le facteur de perte total du rayon
-    double loss = 1;
+std::complex<double> Ray::compute_field() { // calcule le facteur de perte total du rayon
+    std::complex<double> loss = 1;
     for (int i = 0; i < loss_factors.size(); i++) {
         loss *= loss_factors[i];
     }
-    return fabs(loss); // fabs pour float et pas abs qui traite les int
+    return loss; // fabs pour float et pas abs qui traite les int
 }
 
 void Ray::add_wall_hit(int wall_index) { // rajoute un mur dans la liste des murs touchés, permet de ne pas vérifier les intersections avec des murs déjà touchés lorsqu'on cherche les transmissions

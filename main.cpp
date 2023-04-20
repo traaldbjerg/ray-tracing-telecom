@@ -1,12 +1,14 @@
 #include <iostream>
 #include <chrono>
 #include <cmath>
+#include <complex>
 #include "common.hpp"
 #include "reflections.hpp"
 #include "transmissions.hpp"
 #include "time.hpp"
 #include "rcoef.hpp"
 #include "distance.hpp"
+#include "setup.hpp"
 
 int main() {
 
@@ -17,10 +19,15 @@ int main() {
     const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
     const int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
 
-    // std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
-    // std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
-    std::vector<double> t(2); t[0] = -5; t[1] = -5; // coordonnées de l'émetteur
-    std::vector<double> r(2);
+    //double frequency = 2.4e9; // fréquence de la porteuse en Hz
+
+
+    // paramètres de la pièce pour l'exo 8.1
+    //std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
+    //std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
+    // coordonnées pour l'usine (à changer au besoin)
+    std::vector<double> t(2); t[0] = -5; t[1] = 0; // coordonnées de l'émetteur
+    std::vector<double> r(2); r[0] = 50; r[1] = -40; // coordonnées du récepteur
     
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays;    // vecteur qui contiendra l'ensemble des rayons
@@ -31,11 +38,11 @@ int main() {
     //layout.emplace_back(0.0, 10.0, 10.0, 10.0, 2);
     //layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
     // disposition de l'exo 8.1
-    //Wall wall1(0.0, 0.0, 0.0, 80.0, 2); layout.push_back(wall1);
-    //Wall wall2(0.0, 20.0, 80.0, 20.0, 2); layout.push_back(wall2);
-    //Wall wall3(0.0, 80.0, 80.0, 80.0, 2); layout.push_back(wall3);
+    //const Wall wall1(0.0, 0.0, 0.0, 80.0, 4); layout.push_back(wall1);
+    //const Wall wall2(0.0, 20.0, 80.0, 20.0, 4); layout.push_back(wall2);
+    //const Wall wall3(0.0, 80.0, 80.0, 80.0, 4); layout.push_back(wall3);
     // disposition à 4 murs
-    //const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1);
+    //const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1); 
     //const Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);
     //const Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
     //const Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
@@ -91,7 +98,6 @@ int main() {
 
     if (compute_power == 0) {
 
-        r[0] = 50; r[1] = -40; // coordonnées du récepteur
 
         FILE *f_rays = fopen("rays.dat", "w");
 
@@ -104,13 +110,13 @@ int main() {
 
         for (int i = 0; i < rays.size(); i++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
             rays[i].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
-            //rays[i].print_path();               // debug
-            //rays[i].print_loss_factors();       // debug
             rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
             //rays[i].print_walls_hit();          // debug
             find_transmissions(rays[i], layout); // trouver les transmissions
             compute_distance(rays[i]); // calculer la distance parcourue par le rayon
             add_Rcoefs(rays[i], layout); // ajouter les coefficients de réflexion
+            rays[i].print_path();               // debug
+            rays[i].print_loss_factors();       // debug
             //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
         }
 
@@ -124,10 +130,12 @@ int main() {
 
     if (compute_power == 1) {
 
-        const double h = 10; // nombre de pas par mètre
+        const double h = 2; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 70.0;
-        double power = 0.0;
+
+        double power;
+        //std::complex<double> field(0.0, 0.0);
 
         double progress_save = -1; // -1 pour être sûr que la barre est affichée immédiatement
 
@@ -141,6 +149,7 @@ int main() {
                 if (!(r[1] < -45 && r[0] < 75)) {  // si le récepteur est dans la pièce, on calcule la puissance
                 
                     power = 0;
+                    //field = 0.0;
                     for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
                         compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
                     }
@@ -161,10 +170,13 @@ int main() {
                         find_transmissions(rays[l], layout); // trouver les transmissions
                         compute_distance(rays[l]); // calculer la distance parcourue par le rayon
                         add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
-                        power += rays[l].compute_power();
+                        //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE
+                        power += abs(rays[l].compute_field()) * abs(rays[l].compute_field()); // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
                     }
                     rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
-                    fprintf(f_power, "%f %f %f\n", r[0], r[1], 20 * log10(power/1000));
+                    //power = real(field * conj(field)); // calculer la puissance
+                    power *= G_TX * P_TX * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
+                    fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(power * 1000));
                 }
             }
             fprintf(f_power, "\n"); // pour respecter le format gnuplot

@@ -2,6 +2,8 @@
 #include <vector>
 #include <math.h>
 #include <iostream>
+#include "setup.hpp"
+#include <complex>
 
 class Wall {
     // classe mur, reprend les propriétés des murs (position, épaisseur, permittivité, conductivité)
@@ -18,13 +20,16 @@ class Wall {
     double width;
     double eps_rel;
     double sigma;
+    double Z1 = 120 * M_PI;
+    std::complex<double> Z2; // espérons que la racine fonctionne comme on veut
+    std::complex<double> gamma_propag;
 
     // méthodes
     public:
     Wall(double ux, double uy, double vx, double vy, int t);
     //~Wall();
-    double getRcoef(double scal);
-    double getTcoef(double scal);
+    std::complex<double> getRcoef(double scal);
+    std::complex<double> getTcoef(double scal);
     std::vector<double> getU();
     std::vector<double> getV();
     std::vector<double> getW();
