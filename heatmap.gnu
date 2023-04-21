@@ -1,7 +1,7 @@
 reset
 set pm3d explicit
 set pm3d map
-set title "Puissance moyenne du champ électromagnétique dans la pièce (pas d'unités cohérentes actuellement)"
+set title "Puissance moyenne du champ électromagnétique dans la pièce (dBm)"
 set xlabel "x (m)"
 set ylabel "y (m)"
 set zlabel "Puissance (pas d'unités cohérentes actuellement)"

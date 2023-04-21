@@ -101,6 +101,8 @@ int main() {
 
         FILE *f_rays = fopen("rays.dat", "w");
 
+        int k = recursion_depth; // debug
+
         for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
             compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
         }
@@ -130,7 +132,7 @@ int main() {
 
     if (compute_power == 1) {
 
-        const double h = 2; // nombre de pas par mètre
+        const double h = 5; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 70.0;
 
@@ -158,7 +160,7 @@ int main() {
                         progress_save = double (i / (Lx*h));
                         printProgress(progress_save); // afficher l'avancement de la boucle
                     }
-
+ 
                     Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
                     rays.push_back(direct_ray); // rajouter le rayon direct
 

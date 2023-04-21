@@ -41,8 +41,8 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
             t_virtuel[0] = t[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
             t_virtuel[1] = t[1] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[1];
             std::vector<double> t_virtuel_rel(2); // coordonnées de l'émetteur virtuel par rapport au mur
-            t_virtuel_rel[0] = t_rel[0] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[0];
-            t_virtuel_rel[1] = t_rel[1] - 2 * dotproduct(t_rel, layout[i].getN()) * layout[i].getN()[1];
+            t_virtuel_rel[0] = t_virtuel[0] - layout[i].getU()[0];
+            t_virtuel_rel[1] = t_virtuel[1] - layout[i].getU()[1];
 
             //std::cout << "t_virtuel " << i + 1 << ": (" << t_virtuel[0] << ", " << t_virtuel[1] << ")" << std::endl; // debug
 
@@ -81,21 +81,17 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
                             && dotproduct(t_virtuel_rel, layout[i].getN()) * dotproduct(r_copy_rel, layout[i].getN()) < 0.0) { 
                             // si l'antenne virtuelle est du côté opposé au récepteur -> réflexion
 
-                    std::vector<double> r_copy_2 = r_copy; // point de réflexion de l'itération précédente
+                    //std::vector<double> r_copy_2 = r_copy; // point de réflexion de l'itération précédente
                     r_copy[0] = layout[i].getU()[0] + dist * layout[i].getW()[0]; // calculer le point de réflexion de cette itération-ci
                     r_copy[1] = layout[i].getU()[1] + dist * layout[i].getW()[1];
 
                     //std::cout << "r_copy: (" << r_copy[0] << ", " << r_copy[1] << ")" << std::endl; // debug
                     //std::cout << "r_copy_2: (" << r_copy_2[0] << ", " << r_copy_2[1] << ")" << std::endl; // debug 
 
-                    //std::vector<double> ray_segment(2); ray_segment[0] = r_copy_2[0] - r_copy[0]; ray_segment[1] = r_copy_2[1] - r_copy[1];
-
                     rays_in_scope[j].extend_path(r_copy);
                     //rays_in_scope[j].add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN()))); // ajouter le facteur de perte de puissance
                     rays_in_scope[j].add_wall_hit(i); // ajouter le mur à la liste des murs sur lesquels le rayon rebondit
                 }
-
-                    // calculer la somme de puissance ici -> laisser une méthode de Wall donner les coefs de réflexion et de transmission?
 
                 else { // rebond invalide -> retirer le rayon de la liste des rayons à traiter
                     rays_in_scope.erase(rays_in_scope.begin() + j);
@@ -107,13 +103,6 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
                     rays.push_back(rays_in_scope[j]);
                 }
 
-            //}
-            /*}
-            else { // transmission
-
-                // calculer la perte de puissance ici
-                if (remaining_rec_depth > 1) compute_reflections(f, layout, t, r, remaining_rec_depth - 1, d); // récursion
-            }*/
         }
     }
  }
