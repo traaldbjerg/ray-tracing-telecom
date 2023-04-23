@@ -4,3 +4,5 @@
 #define CELERITY 299792458
 #define G_TX 1
 #define P_TX 3.16
+#define EPSILON_0 8.854187817e-12
+#define MU_0 1.2566370614e-6
