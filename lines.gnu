@@ -1,5 +1,5 @@
 reset
-set title "Rayons possibles (max 4 réflexions) pour la disposition de l'usine"
+set title "Rayons possibles (max 2 réflexions) pour la disposition de l'usine"
 set xlabel "x (m)"
 set ylabel "y (m)"
 set nokey
