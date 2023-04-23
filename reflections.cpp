@@ -9,7 +9,7 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
 
     // layout ensemble des murs du plan ; previous_wall_index l'index du mur précédent (pour éviter 2 réflexions consécutives sur le même mur)
     // r les coordonnées du récepteur; t les coordonnées de l'émetteur (virtuel ou non); remaining_rec_depth profondeur de récursion;
-    // d distance parcourue par le rayon (potentiellement à changer); rays ensemble des rayons
+    // rays ensemble des rayons
     // trouver les n-uples de murs qui permettent les réflexions successives jusqu'au récepteur
 
     for (int i = 0; i < layout.size() ; i++) { // itère sur les murs

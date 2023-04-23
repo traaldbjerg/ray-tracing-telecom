@@ -2,6 +2,7 @@
 #include <chrono>
 #include <cmath>
 #include <complex>
+#include <algorithm>
 #include "common.hpp"
 #include "reflections.hpp"
 #include "transmissions.hpp"
@@ -9,6 +10,7 @@
 #include "rcoef.hpp"
 #include "distance.hpp"
 #include "setup.hpp"
+
 
 int main() {
 
@@ -26,8 +28,8 @@ int main() {
     //std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
     //std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
     // coordonnées pour l'usine (à changer au besoin)
-    std::vector<double> t(2); t[0] = -5; t[1] = 0; // coordonnées de l'émetteur
-    std::vector<double> r(2); r[0] = 50; r[1] = -40; // coordonnées du récepteur
+    std::vector<double> t(2); t[0] = -10; t[1] = 0.5; // coordonnées de l'émetteur
+    std::vector<double> r(2); r[0] = 5; r[1] = -5; // coordonnées du récepteur
     
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays;    // vecteur qui contiendra l'ensemble des rayons
@@ -101,6 +103,8 @@ int main() {
 
         FILE *f_rays = fopen("rays.dat", "w");
 
+        double power = 0; // puissance reçue par le récepteur
+
         int k = recursion_depth; // debug
 
         for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
@@ -120,24 +124,26 @@ int main() {
             rays[i].print_path();               // debug
             rays[i].print_loss_factors();       // debug
             //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
+            power += abs(rays[i].compute_field()) * abs(rays[i].compute_field());   // calculer la puissance reçue par le récepteur
         }
-
+        
         fclose(f_rays);
-
+        power *= G_TX * P_TX * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI);
         system("gnuplot -persist \"lines.gnu\""); // afficher les rayons
-
+        std::cout << "Power is " << 10 * log10(power* 1000) << " dBm" << std::endl;
     }
 
     // boucle pour l'entièreté de la grille, calculer la puissance
 
     if (compute_power == 1) {
 
-        const double h = 5; // nombre de pas par mètre
+        const double h = 10; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 70.0;
 
         double power;
         //std::complex<double> field(0.0, 0.0);
+        double field_modulus;
 
         double progress_save = -1; // -1 pour être sûr que la barre est affichée immédiatement
 
@@ -173,12 +179,14 @@ int main() {
                         compute_distance(rays[l]); // calculer la distance parcourue par le rayon
                         add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
                         //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE
-                        power += abs(rays[l].compute_field()) * abs(rays[l].compute_field()); // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
+                        field_modulus = abs(rays[l].compute_field()); // calculer le champ, METHODE MOYENNEE
+                        power += field_modulus * field_modulus; // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
                     }
+                    //std::cout << "Point : (" << r[0] << ", " << r[1] << ") ; number of rays : " << rays.size() << std::endl; // debug
                     rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
                     //power = real(field * conj(field)); // calculer la puissance
                     power *= G_TX * P_TX * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
-                    fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(power * 1000));
+                    fprintf(f_power, "%f %f %f\n", r[0], r[1], std::min(-60.0, 10 * log10(power * 1000)));
                 }
             }
             fprintf(f_power, "\n"); // pour respecter le format gnuplot
