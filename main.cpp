@@ -10,7 +10,7 @@
 #include "rcoef.hpp"
 #include "distance.hpp"
 #include "setup.hpp"
-
+#include "antenna.hpp"
 
 int main() {
 
@@ -28,9 +28,13 @@ int main() {
     //std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
     //std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
     // coordonnées pour l'usine (à changer au besoin)
-    std::vector<double> t(2); t[0] = -10; t[1] = 0.5; // coordonnées de l'émetteur
+
+    std::vector<double> t; // coordonnées de l'émetteur
+
+    //std::vector<double> t(2); t[0] = -10; t[1] = 0.5; // coordonnées de l'émetteur
     std::vector<double> r(2); r[0] = 5; r[1] = -5; // coordonnées du récepteur
     
+    std::vector<Antenna> antennas; // vecteur qui contient toutes les antennes
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
     std::vector<Ray> rays;    // vecteur qui contiendra l'ensemble des rayons
 
@@ -81,6 +85,8 @@ int main() {
     const Wall wall24(50, -15, 55, -20, 3); layout.push_back(wall24);
     const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
 
+    // antennes
+    Antenna antenna_1({-10, 0.5}, 3); antennas.push_back(antenna_1); // antenne émettrice
 
     // int q = layout.size(); // nombre de murs
 
@@ -137,7 +143,7 @@ int main() {
 
     if (compute_power == 1) {
 
-        const double h = 10; // nombre de pas par mètre
+        const double h = 5; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 70.0;
 
@@ -147,6 +153,8 @@ int main() {
 
         double progress_save = -1; // -1 pour être sûr que la barre est affichée immédiatement
 
+        std::vector<double> power_list(antennas.size()); // liste des puissances de chaque antenne reçue par le récepteur
+
         FILE *f_power = fopen("power.dat", "w");
         // boucle pour toutes les positions de récepteur, plotter la puissance sur une grille
         for (int i = 0; i <= Lx * h; i++) { // itère d'abord verticalement, colonne par colonne
@@ -155,38 +163,46 @@ int main() {
                 r[1] = -j/h;
 
                 if (!(r[1] < -45 && r[0] < 75)) {  // si le récepteur est dans la pièce, on calcule la puissance
-                
-                    power = 0;
-                    //field = 0.0;
-                    for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
-                        compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
-                    }
 
-                    if ((double (i / (Lx*h))) > (progress_save + 0.005)) { // pour ne pas faire du in/out (très lent) quand le résultat n'a pas changé
-                        progress_save = double (i / (Lx*h));
-                        printProgress(progress_save); // afficher l'avancement de la boucle
-                    }
- 
-                    Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
-                    rays.push_back(direct_ray); // rajouter le rayon direct
+                    for (int q = 0; q < antennas.size(); q++) {
 
-                    for (int l = 0; l < rays.size(); l++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
-                        rays[l].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
-                        //rays[l].print_path();               // debug
-                        //rays[l].print_loss_factors();       // debug
-                        //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
-                        find_transmissions(rays[l], layout); // trouver les transmissions
-                        compute_distance(rays[l]); // calculer la distance parcourue par le rayon
-                        add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
-                        //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE
-                        field_modulus = abs(rays[l].compute_field()); // calculer le champ, METHODE MOYENNEE
-                        power += field_modulus * field_modulus; // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
+                        int k = recursion_depth; // debug
+                    
+                        power = 0;
+                        //field = 0.0;
+                        for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+                            compute_reflections(layout, WALL_PLACEHOLDER, antennas[q].get_position(), r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
+                        }
+
+                        if ((double (i / (Lx*h))) > (progress_save + 0.005)) { // pour ne pas faire du in/out (très lent) quand le résultat n'a pas changé
+                            progress_save = double (i / (Lx*h));
+                            printProgress(progress_save); // afficher l'avancement de la boucle
+                        }
+    
+                        Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
+                        rays.push_back(direct_ray); // rajouter le rayon direct
+                        for (int l = 0; l < rays.size(); l++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
+                            rays[l].extend_path(antennas[q].get_position());             // rajouter l'émetteur à la liste des points du rayon
+                            //rays[l].print_path();               // debug
+                            //rays[l].print_loss_factors();       // debug
+                            //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
+                            find_transmissions(rays[l], layout); // trouver les transmissions
+                            compute_distance(rays[l]); // calculer la distance parcourue par le rayon
+                            add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
+                            rays[l].add_loss_factor(antennas[q].compute_directivity(acos(normalised_dotproduct(rays[l].get_last_segment(), {1, 0})))); // ajouter le gain de directivité
+                            //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE
+                            field_modulus = abs(rays[l].compute_field()); // calculer le champ, METHODE MOYENNEE
+                            power += field_modulus * field_modulus; // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
+                        }
+                        //std::cout << "Point : (" << r[0] << ", " << r[1] << ") ; number of rays : " << rays.size() << std::endl; // debug
+                        rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
+                        //power = real(field * conj(field)); // calculer la puissance
+                        power *= antennas[q].get_G_TX() * antennas[q].get_P_TX() * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
+                        power_list[q] = power; // ajouter la puissance à la liste des puissances reçues par le point
                     }
-                    //std::cout << "Point : (" << r[0] << ", " << r[1] << ") ; number of rays : " << rays.size() << std::endl; // debug
-                    rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
-                    //power = real(field * conj(field)); // calculer la puissance
-                    power *= G_TX * P_TX * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
-                    fprintf(f_power, "%f %f %f\n", r[0], r[1], std::min(-60.0, 10 * log10(power * 1000)));
+                    double max_power = *std::max_element(std::begin(power_list), std::end(power_list)); // trouver la puissance maximale reçue par le point
+                    fprintf(f_power, "%f %f %f\n", r[0], r[1], std::min(-60.0, 10 * log10(max_power * 1000)));
+                    power_list.clear(); // retirer les différentes puissances reçues par le point
                 }
             }
             fprintf(f_power, "\n"); // pour respecter le format gnuplot

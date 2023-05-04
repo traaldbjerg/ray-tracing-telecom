@@ -74,3 +74,8 @@ void Ray::print_walls_hit() {
     }
     std::cout << std::endl;
 }
+
+std::vector<double> Ray::get_last_segment() {
+    std::vector<double> last_segment = {path[path.size()-2][0] - path[path.size()-1][0], path[path.size()-2][1] - path[path.size()-1][1]};
+    return last_segment;
+}

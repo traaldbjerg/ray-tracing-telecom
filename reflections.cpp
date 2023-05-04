@@ -78,7 +78,8 @@ void compute_reflections(std::vector<Wall> &layout, int previous_wall_index, std
                 //std::cout << "produit de dotproduct: " << dotproduct(t_virtuel, layout[i].getN()) * dotproduct(r_copy, layout[i].getN()) << std::endl; // debug
 
                 if (0.0 < dist && dist < 1.0 // sinon la réflexion est invalide car en dehors du mur -> pas besoin de calculer plus de choses
-                            && dotproduct(t_virtuel_rel, layout[i].getN()) * dotproduct(r_copy_rel, layout[i].getN()) < 0.0) { 
+                            && dotproduct(t_virtuel_rel, layout[i].getN()) * dotproduct(r_copy_rel, layout[i].getN()) < 0.0
+                            ) { 
                             // si l'antenne virtuelle est du côté opposé au récepteur -> réflexion
 
                     //std::vector<double> r_copy_2 = r_copy; // point de réflexion de l'itération précédente

@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include <complex>
 
 class Ray {
@@ -31,4 +31,5 @@ class Ray {
         void print_path_to_file(FILE *f); // écrit l'ensemble des extrémités des segments du rayon dans le fichier f, pour plotter avec gnuplot
         void print_loss_factors(); // debug
         void print_walls_hit(); // debug
+        std::vector<double> get_last_segment(); // retourne le dernier segment du rayon
 };
