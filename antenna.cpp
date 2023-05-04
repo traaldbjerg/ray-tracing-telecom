@@ -20,9 +20,9 @@ Antenna::~Antenna() {} // destructeur
 double Antenna::compute_directivity(double angle){ // retourne le gain
     double res;
     if (type == 3) {
-        double g_max = 1.0; // gain maximal en dB
-        double delta = 0.3490659; // angle pour lequel a lieu le gain maximal, 20 degrés en radians
-        double phi_3dB = 0.3490659; // angle pour lequel le gain est réduit de 3dB -> largeur du faisceau
+        double g_max = 21.5836; // gain maximal en dB
+        double delta = 0.3; // angle pour lequel a lieu le gain maximal
+        double phi_3dB = 0.523599; // angle pour lequel le gain est réduit de 3dB -> largeur du faisceau, ici 30 degrés en radians
         res = pow(10, (g_max - 12 * (angle - delta) / phi_3dB * (angle - delta) / phi_3dB ) / 10);
     }
     else {

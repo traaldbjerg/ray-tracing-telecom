@@ -23,3 +23,11 @@ double CCW(std::vector<double> a, std::vector<double> b, std::vector<double> c) 
 int intersect(std::vector<double> a, std::vector<double> b, std::vector<double> c, std::vector<double> d) // test d'intersection entre deux segments
 // renvoie 1 si les segments [a,b] et [c,d] s'intersectent, 0 sinon
 { return (CCW(a,b,c)*CCW(a,b,d)<0 && CCW(c,d,b)*CCW(c,d,a)<0); }
+
+double signed_acos(std::vector<double> u, std::vector<double> v) { // retourne l'angle signé entre 2 vecteurs
+    double res = acos(normalised_dotproduct(u, v));
+    if (u[0] * v[1] - u[1] * v[0] < 0) {
+        res *= -1;
+    }
+    return res;
+}

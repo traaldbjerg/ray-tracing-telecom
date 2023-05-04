@@ -86,7 +86,7 @@ int main() {
     const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
 
     // antennes
-    Antenna antenna_1({-10, 0.5}, 3); antennas.push_back(antenna_1); // antenne émettrice
+    Antenna antenna_1({50, -25}, 3); antennas.push_back(antenna_1); // antenne émettrice
 
     // int q = layout.size(); // nombre de murs
 
@@ -189,7 +189,7 @@ int main() {
                             find_transmissions(rays[l], layout); // trouver les transmissions
                             compute_distance(rays[l]); // calculer la distance parcourue par le rayon
                             add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
-                            rays[l].add_loss_factor(antennas[q].compute_directivity(acos(normalised_dotproduct(rays[l].get_last_segment(), {1, 0})))); // ajouter le gain de directivité
+                            rays[l].add_loss_factor(antennas[q].compute_directivity(signed_acos(rays[l].get_last_segment(), {1, 0}))); // ajouter le gain de directivité
                             //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE
                             field_modulus = abs(rays[l].compute_field()); // calculer le champ, METHODE MOYENNEE
                             power += field_modulus * field_modulus; // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
@@ -201,7 +201,7 @@ int main() {
                         power_list[q] = power; // ajouter la puissance à la liste des puissances reçues par le point
                     }
                     double max_power = *std::max_element(std::begin(power_list), std::end(power_list)); // trouver la puissance maximale reçue par le point
-                    fprintf(f_power, "%f %f %f\n", r[0], r[1], std::min(-60.0, 10 * log10(max_power * 1000)));
+                    fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(max_power * 1000));
                     power_list.clear(); // retirer les différentes puissances reçues par le point
                 }
             }
@@ -222,5 +222,8 @@ int main() {
 
     std::cout << "CPU time: " << tc6 - tc5 << " s" << std::endl;
     std::cout << "Clock time: " << tw6 - tw5 << " s" << std::endl;
+
+    //std::cout << signed_acos({1, 0}, {1, 1}) << std::endl; // debug
+    //std::cout << signed_acos({1, 0}, {1, -1}) << std::endl; // debug
 
 }
