@@ -143,7 +143,7 @@ int main() {
 
     if (compute_power == 1) {
 
-        const double h = 5; // nombre de pas par mètre
+        const double h = 2; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 70.0;
 
