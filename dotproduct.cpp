@@ -25,9 +25,16 @@ int intersect(std::vector<double> a, std::vector<double> b, std::vector<double> 
 { return (CCW(a,b,c)*CCW(a,b,d)<0 && CCW(c,d,b)*CCW(c,d,a)<0); }
 
 double signed_acos(std::vector<double> u, std::vector<double> v) { // retourne l'angle signé entre 2 vecteurs
-    double res = acos(normalised_dotproduct(u, v));
+
+    double dot = u[0] * v[0] + u[1] * v[1];
+    double det = u[0] * v[1] - u[1] * v[0];
+    double res = atan2(det, dot);
+    /*double res = acos(normalised_dotproduct(u, v));
     if (u[0] * v[1] - u[1] * v[0] < 0) {
         res *= -1;
     }
+    if (u[0] < 0) {
+        res -= M_PI;
+    }*/
     return res;
 }
