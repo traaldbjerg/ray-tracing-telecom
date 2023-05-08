@@ -86,7 +86,8 @@ int main() {
     const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
 
     // antennes
-    Antenna antenna_1({-5, -5}, 3); antennas.push_back(antenna_1); // antenne émettrice
+    Antenna antenna_1({-5, 5}, 2); antennas.push_back(antenna_1); // antenne émettrice
+    Antenna antenna_2({105, -40}, 2); antennas.push_back(antenna_2);
 
     // int q = layout.size(); // nombre de murs
 
@@ -150,6 +151,7 @@ int main() {
 
         double power;
         double power_tot = 0;
+        //double max_power = 0;
         //std::complex<double> field(0.0, 0.0);
         double field_modulus;
 
@@ -167,11 +169,14 @@ int main() {
                 r[1] = -j/h;
 
                 if (!(r[1] < -45 && r[0] < 75)) {  // si le récepteur est dans la pièce, on calcule la puissance
-
+                
+                    //int v = 0;
+                    
 
                     for (int q = 0; q < antennas.size(); q++) {
 
                         int k = recursion_depth; // debug
+                        
                     
                         power = 0;
                         //field = 0.0;
@@ -205,14 +210,21 @@ int main() {
                         power *= antennas[q].get_G_TX() * antennas[q].get_P_TX() * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
                         power_list[q] = power; // ajouter la puissance à la liste des puissances reçues par le point
                         power_tot += power;
+                        std::cout << "Power antenne " << q + 1 << " is " << 10 * log10(power * 1000) << " dBm" << std::endl;
                     }
-                    
-                    double max_power = *std::max_element(std::begin(power_list), std::end(power_list)); // trouver la puissance maximale reçue par le point
+                    //for (v = 0; v < power_list.size(); v++ ){ trouver la puissance maximale reçue par le point
+                    //    if (power_list[v] > max_power){
+                    //        max_power = power_list[v];
+                    //    }
+                    //}
+                    double max_power = *std::max_element(begin(power_list), end(power_list)); // trouver la puissance maximale reçue par le point
+                    std::cout << "Power max is " << 10 * log10(max_power * 1000) << " dBm" << std::endl;
                     fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(max_power * 1000));
                     fprintf(f_debit, "%f %f %f\n", r[0], r[1], std::min(350.0 , 15 * 10 * log10(max_power * 1000) + 1250));
                     fprintf(f_exposition, "%f %f %f\n", r[0], r[1], 10 * log10(power_tot * 1000));
                     power_list.clear(); // retirer les différentes puissances reçues par le point
                     power_tot = 0;
+                    //max_power = 0;
                 }
             }
             fprintf(f_power, "\n"); // pour respecter le format gnuplot
