@@ -1,7 +1,7 @@
 reset
 set pm3d explicit
 set pm3d map
-set title "Somme des puissances moyennes dans l'usine (dBm)"
+set title "Puissance moyenne reçue par un récepteur dans l'usine (dBm)"
 set xlabel "x (m)"
 set ylabel "y (m)"
 set zlabel "dBm"

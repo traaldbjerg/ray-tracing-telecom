@@ -86,8 +86,8 @@ int main() {
     const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
 
     // antennes
-    Antenna antenna_1({-5, 5}, 2); antennas.push_back(antenna_1); // antenne émettrice
-    Antenna antenna_2({105, -40}, 2); antennas.push_back(antenna_2);
+    Antenna antenna_1({-10, 0.5}, 2); antennas.push_back(antenna_1); // antenne émettrice
+    //Antenna antenna_2({105, -40}, 2); antennas.push_back(antenna_2);
 
     // int q = layout.size(); // nombre de murs
 
@@ -159,7 +159,7 @@ int main() {
 
         std::vector<double> power_list(antennas.size()); // liste des puissances de chaque antenne reçue par le récepteur
 
-        FILE *f_power = fopen("power.dat", "w");
+        //FILE *f_power = fopen("power.dat", "w");
         FILE *f_debit = fopen("debit.dat", "w");
         FILE *f_exposition = fopen("exposition.dat", "w");
         // boucle pour toutes les positions de récepteur, plotter la puissance sur une grille
@@ -173,14 +173,14 @@ int main() {
                     //int v = 0;
                     
 
-                    for (int q = 0; q < antennas.size(); q++) {
+                    for (int q = 0; q < antennas.size(); q++) { // pour chaque antenne
 
                         int k = recursion_depth; // debug
                         
                     
                         power = 0;
                         //field = 0.0;
-                        for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+                        for (int k = 1; k <= recursion_depth; k++) { // d'abord 1 réflexion puis 2 .. jusque recursion_depth
                             compute_reflections(layout, WALL_PLACEHOLDER, antennas[q].get_position(), r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
                         }
 
@@ -208,18 +208,18 @@ int main() {
                         rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
                         //power = real(field * conj(field)); // calculer la puissance
                         power *= antennas[q].get_G_TX() * antennas[q].get_P_TX() * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
-                        power_list[q] = power; // ajouter la puissance à la liste des puissances reçues par le point
+                        power_list.push_back(power); // ajouter la puissance à la liste des puissances reçues par le point
                         power_tot += power;
-                        std::cout << "Power antenne " << q + 1 << " is " << 10 * log10(power * 1000) << " dBm" << std::endl;
+                        //std::cout << "Power antenne " << q + 1 << " is " << 10 * log10(power * 1000) << " dBm" << std::endl;
                     }
                     //for (v = 0; v < power_list.size(); v++ ){ trouver la puissance maximale reçue par le point
                     //    if (power_list[v] > max_power){
                     //        max_power = power_list[v];
                     //    }
                     //}
-                    double max_power = *std::max_element(begin(power_list), end(power_list)); // trouver la puissance maximale reçue par le point
-                    std::cout << "Power max is " << 10 * log10(max_power * 1000) << " dBm" << std::endl;
-                    fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(max_power * 1000));
+                    auto max_power = *std::max_element(power_list.begin(), power_list.end()); // trouver la puissance maximale reçue par le point
+                    //std::cout << "Power max is " << 10 * log10(*max_power * 1000) << " dBm" << std::endl;
+                    //fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(max_power * 1000));
                     fprintf(f_debit, "%f %f %f\n", r[0], r[1], std::min(350.0 , 15 * 10 * log10(max_power * 1000) + 1250));
                     fprintf(f_exposition, "%f %f %f\n", r[0], r[1], 10 * log10(power_tot * 1000));
                     power_list.clear(); // retirer les différentes puissances reçues par le point
@@ -227,16 +227,16 @@ int main() {
                     //max_power = 0;
                 }
             }
-            fprintf(f_power, "\n"); // pour respecter le format gnuplot
+            //fprintf(f_power, "\n"); // pour respecter le format gnuplot
             fprintf(f_debit, "\n");
             fprintf(f_exposition, "\n");
         }
         
-        fclose(f_power);
+        //fclose(f_power);
         fclose(f_debit);
         fclose(f_exposition);
 
-        system("gnuplot -persist \"heatmap.gnu\""); // afficher la puissance sur une grille
+        //system("gnuplot -persist \"heatmap.gnu\""); // afficher la puissance sur une grille
         system("gnuplot -persist \"debit.gnu\""); // afficher le débit binaire sur la grille
         system("gnuplot -persist \"exposition.gnu\""); // afficher le débit binaire sur la grille
 
