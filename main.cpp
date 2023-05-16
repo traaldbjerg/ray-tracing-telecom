@@ -18,7 +18,7 @@ int main() {
 
     // paramètres d'exécution du programme
 
-    const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
+    const int compute_power = 0; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
     const int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
 
     //double frequency = 2.4e9; // fréquence de la porteuse en Hz
@@ -26,13 +26,13 @@ int main() {
 
     // paramètres de la pièce pour l'exo 8.1
     //std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
-    //std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
+    std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
     // coordonnées pour l'usine (à changer au besoin)
 
     std::vector<double> t; // coordonnées de l'émetteur
 
     //std::vector<double> t(2); t[0] = -10; t[1] = 0.5; // coordonnées de l'émetteur
-    std::vector<double> r(2); r[0] = 5; r[1] = -5; // coordonnées du récepteur
+    //std::vector<double> r(2); r[0] = 5; r[1] = -5; // coordonnées du récepteur
     
     std::vector<Antenna> antennas; // vecteur qui contient toutes les antennes
     std::vector<Wall> layout; // vecteur qui contiendra l'ensemble des murs
@@ -86,8 +86,14 @@ int main() {
     const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
 
     // antennes
+    // disposition de l'usine
     Antenna antenna_1({-10, 0.5}, 2); antennas.push_back(antenna_1); // antenne émettrice
+    //Antenna antenna_2({85, -50}, 1); antennas.push_back(antenna_2); //TX1
     //Antenna antenna_2({105, -40}, 2); antennas.push_back(antenna_2);
+    // disposition de l'exo 8.1
+    //Antenna antenna_8_1({32, 10}, 2); antennas.push_back(antenna_8_1); // antenne émettrice
+
+
 
     // int q = layout.size(); // nombre de murs
 
@@ -115,24 +121,30 @@ int main() {
 
         int k = recursion_depth; // debug
 
-        for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
-            compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
-        }
+        for (int q = 0; q < antennas.size(); q++) { // pour chaque antenne
 
-        Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
-        rays.push_back(direct_ray); // rajouter le rayon direct
+            t = antennas[q].get_position();
 
-        for (int i = 0; i < rays.size(); i++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
-            rays[i].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
-            rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
-            //rays[i].print_walls_hit();          // debug
-            find_transmissions(rays[i], layout); // trouver les transmissions
-            compute_distance(rays[i]); // calculer la distance parcourue par le rayon
-            add_Rcoefs(rays[i], layout); // ajouter les coefficients de réflexion
-            rays[i].print_path();               // debug
-            rays[i].print_loss_factors();       // debug
-            //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
-            power += abs(rays[i].compute_field()) * abs(rays[i].compute_field());   // calculer la puissance reçue par le récepteur
+            for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
+                compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
+            }
+
+            Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
+            rays.push_back(direct_ray); // rajouter le rayon direct
+
+            for (int i = 0; i < rays.size(); i++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
+                rays[i].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
+                rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
+                //rays[i].print_walls_hit();          // debug
+                find_transmissions(rays[i], layout); // trouver les transmissions
+                compute_distance(rays[i]); // calculer la distance parcourue par le rayon
+                add_Rcoefs(rays[i], layout); // ajouter les coefficients de réflexion
+                rays[i].print_path();               // debug
+                rays[i].print_loss_factors();       // debug
+                //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
+                power += abs(rays[i].compute_field()) * abs(rays[i].compute_field());   // calculer la puissance reçue par le récepteur
+            }
+
         }
         
         fclose(f_rays);
@@ -197,7 +209,7 @@ int main() {
                             //rays[l].print_loss_factors();       // debug
                             //rays[l].print_path_to_file(f_rays); // écrire le rayon dans le fichier
                             find_transmissions(rays[l], layout); // trouver les transmissions
-                            compute_distance(rays[l]); // calculer la distance parcourue par le rayon
+                            compute_distance(rays[l]); // calculer la distance parcourue par le rayon 
                             add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
                             rays[l].add_loss_factor(antennas[q].compute_directivity(signed_acos(rays[l].get_last_segment(), {1, 0}))); // ajouter le gain de directivité
                             //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE

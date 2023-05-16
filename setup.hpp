@@ -1,5 +1,5 @@
 #define WALL_PLACEHOLDER 100
-#define FREQUENCY 26e9
+#define FREQUENCY 868.3e6
 #define OMEGA (2 * M_PI * FREQUENCY)
 #define CELERITY 299792458
 #define G_TX 1

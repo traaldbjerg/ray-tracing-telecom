@@ -18,7 +18,7 @@ class Antenna {
     public:
         Antenna(std::vector<double> t, int type); // constructeur
         ~Antenna(); // destructeur
-        double compute_directivity(double angle); // calcule la directivité de l'antenne
+        std::complex<double> compute_directivity(double angle); // calcule la directivité de l'antenne
         int get_type(); // retourne le type de l'antenne
         double get_P_TX(); // retourne la puissance d'émission de l'antenne
         double get_G_TX(); // retourne le gain d'émission de l'antenne
