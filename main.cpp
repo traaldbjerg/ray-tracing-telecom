@@ -87,7 +87,7 @@ int main() {
 
     // antennes
     // disposition de l'usine
-    Antenna antenna_1({-10, 0.5}, 2); antennas.push_back(antenna_1); // antenne émettrice
+    Antenna antenna_1({-10, 0.5}, 3); antennas.push_back(antenna_1); // antenne émettrice
     //Antenna antenna_2({85, -50}, 1); antennas.push_back(antenna_2); //TX1
     //Antenna antenna_2({105, -40}, 2); antennas.push_back(antenna_2);
     // disposition de l'exo 8.1
@@ -174,6 +174,8 @@ int main() {
         //FILE *f_power = fopen("power.dat", "w");
         FILE *f_debit = fopen("debit.dat", "w");
         FILE *f_exposition = fopen("exposition.dat", "w");
+        FILE *f_danger = fopen("danger.dat", "w");
+
         // boucle pour toutes les positions de récepteur, plotter la puissance sur une grille
         for (int i = 0; i <= Lx * h; i++) { // itère d'abord verticalement, colonne par colonne
             r[0] = i/h;
@@ -234,6 +236,12 @@ int main() {
                     //fprintf(f_power, "%f %f %f\n", r[0], r[1], 10 * log10(max_power * 1000));
                     fprintf(f_debit, "%f %f %f\n", r[0], r[1], std::min(350.0 , 15 * 10 * log10(max_power * 1000) + 1250));
                     fprintf(f_exposition, "%f %f %f\n", r[0], r[1], 10 * log10(power_tot * 1000));
+                    if(10 * log10(power_tot * 1000) >  -30.0 ){
+                        fprintf(f_danger, "%f %f %f\n", r[0], r[1], 1.0 );
+                    }
+                    else {
+                        fprintf(f_danger, "%f %f %f\n", r[0], r[1], 0.0 );
+                    }
                     power_list.clear(); // retirer les différentes puissances reçues par le point
                     power_tot = 0;
                     //max_power = 0;
@@ -242,15 +250,18 @@ int main() {
             //fprintf(f_power, "\n"); // pour respecter le format gnuplot
             fprintf(f_debit, "\n");
             fprintf(f_exposition, "\n");
+            fprintf(f_danger, "\n");
         }
         
         //fclose(f_power);
         fclose(f_debit);
         fclose(f_exposition);
+        fclose(f_danger);
 
         //system("gnuplot -persist \"heatmap.gnu\""); // afficher la puissance sur une grille
         system("gnuplot -persist \"debit.gnu\""); // afficher le débit binaire sur la grille
         system("gnuplot -persist \"exposition.gnu\""); // afficher le débit binaire sur la grille
+        system("gnuplot -persist \"danger.gnu\"");
 
     }
 
