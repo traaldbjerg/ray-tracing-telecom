@@ -1,5 +1,5 @@
 #include "common.hpp"
-#include "dotproduct.hpp"
+#include "vectormath.hpp"
 #include <iostream>
 #include <math.h>
 #include "progressbar.hpp"

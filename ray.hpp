@@ -2,8 +2,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include <complex>
+#include "setup.hpp"
 
 class Ray {
     // classe rayon, reprend les propriétés des rayons (extrémités des segments, facteurs de perte)
@@ -20,8 +21,7 @@ class Ray {
         ~Ray(); // destructeur
         void add_loss_factor(std::complex<double> factor); // rajouter un facteur de perte dans la liste
         void add_loss_factor(double factor);
-        //void add_all_loss_factors(std::vector<Wall> &layout); // rajoute tous les facteurs de perte d'un vecteur dans la liste des facteurs de perte du rayon
-        std::complex<double> compute_field(); // calcule le facteur de perte total du rayon
+        std::complex<double> compute_intermediary_field(); // calcule le facteur de perte total du rayon
         void add_wall_hit(int wall_index); // rajoute un mur dans la liste des murs touchés
         std::vector<int> get_walls_hit(); // retourne la liste des murs touchés par le rayon
         std::vector<double> get_last_point(); // retourne le dernier point du rayon
@@ -31,4 +31,5 @@ class Ray {
         void print_path_to_file(FILE *f); // écrit l'ensemble des extrémités des segments du rayon dans le fichier f, pour plotter avec gnuplot
         void print_loss_factors(); // debug
         void print_walls_hit(); // debug
+        std::vector<double> get_last_segment(); // retourne le dernier segment du rayon
 };

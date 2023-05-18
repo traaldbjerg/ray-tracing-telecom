@@ -1,4 +1,4 @@
-#include "rcoef.hpp"
+#include "addrcoef.hpp"
 
 void add_Rcoefs(Ray &ray, std::vector<Wall> &layout) { // rajoute tous les facteurs de perte dûs au réflexions dans la liste des pertes du rayon
     std::vector<int> walls_hit = ray.get_walls_hit();
