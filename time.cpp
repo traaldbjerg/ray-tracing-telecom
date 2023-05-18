@@ -1,6 +1,7 @@
 #include <time.h>
 #include "time.h"
 
+// MATH-H301, partie calcul numérique, code de Mr. Napov
 
 /* retourne le temps CPU depuis le début de l'execution du programme */
 double mytimer_cpu(void){
@@ -14,4 +15,3 @@ double mytimer_wall(void){
         gettimeofday( &dummy, NULL );
         return (double) ( (double) dummy.tv_sec +  ((double) dummy.tv_usec)/1000000.0 );
 }
-

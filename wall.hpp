@@ -8,7 +8,7 @@
 class Wall {
     // classe mur, reprend les propriétés des murs (position, épaisseur, permittivité, conductivité)
     // se charge également de donner le coefficient de réflexion et de transmission en fonction de l'angle d'incidence d'un rayon
-
+    
     // attributs
     private:
     std::vector<double> u; // première extrémité du mur
@@ -21,7 +21,7 @@ class Wall {
     double eps_rel;
     double sigma;
     double Z1 = 120 * M_PI;
-    std::complex<double> Z2; // espérons que la racine fonctionne comme on veut
+    std::complex<double> Z2; // la racine fonctionne correctement :) 
     std::complex<double> gamma_propag;
 
     // méthodes

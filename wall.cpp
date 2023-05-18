@@ -1,7 +1,6 @@
 #include "wall.hpp"
 #include <iostream>
 
-
 Wall::Wall(double ux, double uy, double vx, double vy, int t) { // constructeur
     u.push_back(ux); // compo x
     u.push_back(uy); // compo y
@@ -18,17 +17,9 @@ Wall::Wall(double ux, double uy, double vx, double vy, int t) { // constructeur
     else if (type == 2) {width = 0.5 ; eps_rel = 5.0 ; sigma = 0.014;} // [m; -; S] // mur en béton
     else if (type == 3) {width = 0.1 ; eps_rel = 2.25 ; sigma = 0.04;} // [m; -; S] // cloison
     else if (type == 4) {width = 0.15 ; eps_rel = 4.8 ; sigma = 0.018;} // [m; -; S] // mur de l'exo 8.1
-    Z2 = sqrt(MU_0 / std::complex<double>(EPSILON_0 * eps_rel, - sigma / OMEGA)); // espérons que la racine fonctionne comme on veut 
-    //std::cout << "Z2 = " << Z2 << std::endl; // debug 
+    Z2 = sqrt(MU_0 / std::complex<double>(EPSILON_0 * eps_rel, - sigma / OMEGA)); // la racine fonctionne bien comme on veut
     gamma_propag = sqrt(std::complex<double>((-OMEGA) * (OMEGA) * EPSILON_0 * eps_rel * MU_0, sigma * OMEGA * MU_0));
-    //std::cout << "gamma_propag = " << gamma_propag << std::endl; // debug
-    
-
-    // Z = sqrt(mu_0 / eps_0) / sqrt(eps_rel) par déf de la permittivité relative
-    //   = 120 * M_PI / sqrt(eps_rel) en remplaçant les valeurs des constantes
 }
-
-//Wall::~Wall() {}
 
 std::complex<double> Wall::getRcoef(double scal) { // coefficient de réflexion, on considère uniquement la polarisation perpendiculaire au plan d'incidence
     std::complex<double> gamma;
@@ -52,26 +43,12 @@ std::complex<double> Wall::getTcoef(double scal) { // coefficient de transmissio
     return T;
 }
 
-std::vector<double> Wall::getU() {
-    return u;
-}
+std::vector<double> Wall::getU() {return u;}
+std::vector<double> Wall::getV() {return v;}
+std::vector<double> Wall::getN() {return n;}
+std::vector<double> Wall::getW() {return w;}
+int Wall::getType() {return type;}
 
-std::vector<double> Wall::getV() {
-    return v;
-}
-
-std::vector<double> Wall::getN() {
-    return n;
-}
-
-std::vector<double> Wall::getW() {
-    return w;
-}
-
-int Wall::getType() {
-    return type;
-}
-
-void Wall::print_wall_to_file(FILE *f) {
+void Wall::print_wall_to_file(FILE *f) { // pour créer le fichier wall.dat à plot
     fprintf(f, "%f, %f\n%f, %f\n\n\n", u[0], u[1], v[0], v[1]);
 }

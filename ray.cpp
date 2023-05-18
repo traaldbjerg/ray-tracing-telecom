@@ -1,6 +1,6 @@
 #include "ray.hpp"
 
-Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}}; walls_hit = {100};} // constructeur, 100 en placeholder
+Ray::Ray(std::vector<double> r) {loss_factors = {1}; path = {{r[0], r[1]}}; walls_hit = {WALL_PLACEHOLDER};} // constructeur
 
 Ray::~Ray() {} // destructeur
 
@@ -20,16 +20,16 @@ void Ray::add_loss_factor(std::complex<double> factor) { // rajouter un facteur 
     loss_factors.push_back(factor);
 }
 
-void Ray::add_loss_factor(double factor) { // rajouter un facteur de perte dans la liste
+void Ray::add_loss_factor(double factor) { // surcharge pour les doubles
     loss_factors.push_back(factor);
 }
 
-std::complex<double> Ray::compute_field() { // calcule le facteur de perte total du rayon
+std::complex<double> Ray::compute_intermediary_field() { // "intermediary" car ne prend pas en compte l'entièreté des facteurs (comme la puissance de l'émetteur par exemple)
     std::complex<double> loss = 1;
     for (int i = 0; i < loss_factors.size(); i++) {
         loss *= loss_factors[i];
     }
-    return loss; // fabs pour float et pas abs qui traite les int
+    return loss;
 }
 
 void Ray::add_wall_hit(int wall_index) { // rajoute un mur dans la liste des murs touchés, permet de ne pas vérifier les intersections avec des murs déjà touchés lorsqu'on cherche les transmissions
@@ -40,13 +40,7 @@ std::vector<int> Ray::get_walls_hit() { // retourne la liste des murs touchés p
     return walls_hit;
 }
 
-//void Ray::add_all_loss_factors(std::vector<Wall> &layout) { // rajoute tous les facteurs de perte d'un vecteur dans la liste des facteurs de perte du rayon
-//    for (int i = 0; i < walls_hit.size(); i++) {
-//        this.add_loss_factor(layout[i].getRcoef(normalised_dotproduct(ray_segment, layout[i].getN())));
-//    }
-//}
-
-void Ray::print_path() { // debug
+void Ray::print_path() {
     for (int i = 0; i < path.size(); i++) {
         std::cout << "Point " << i << ": (" << path[i][0] << ", " << path[i][1] << ")" << std::endl; // debug
     }
@@ -75,7 +69,7 @@ void Ray::print_walls_hit() {
     std::cout << std::endl;
 }
 
-std::vector<double> Ray::get_last_segment() {
+std::vector<double> Ray::get_last_segment() { // retourne le dernier segment
     std::vector<double> last_segment = {path[path.size()-2][0] - path[path.size()-1][0], path[path.size()-2][1] - path[path.size()-1][1]};
     return last_segment;
 }

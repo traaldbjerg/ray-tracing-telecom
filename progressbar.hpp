@@ -1,3 +1,3 @@
 #include <stdio.h>
 
-void printProgress(double percentage);
+void print_progress(double percentage);
