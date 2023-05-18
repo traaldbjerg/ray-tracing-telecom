@@ -18,19 +18,20 @@ int main() {
 
     // paramètres d'exécution du programme
 
-    const int compute_power = 0; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
+    const int compute_power = 1; // 1 pour le processus sur toute la zone de la pièce, 0 pour le tracé des rayons
     const int recursion_depth = 2; // nombre de fois qu'on effectue la récursion
 
     //double frequency = 2.4e9; // fréquence de la porteuse en Hz
 
 
+    //std::vector<double> t; // coordonnées de l'émetteur
     // paramètres de la pièce pour l'exo 8.1
     //std::vector<double> t(2); t[0] = 32 ; t[1] = 10; // coordonnées de l'émetteur
-    std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
+    //std::vector<double> r(2); r[0] = 47; r[1] = 65; // coordonnées du récepteur
+    // coordonnées pour la disposition carrée
+    //std::vector<double> t(2); t[0] = -3 ; t[1] = 5; // coordonnées de l'émetteur
+    std::vector<double> r(2); r[0] = 5; r[1] = 5; // coordonnées du récepteur 
     // coordonnées pour l'usine (à changer au besoin)
-
-    std::vector<double> t; // coordonnées de l'émetteur
-
     //std::vector<double> t(2); t[0] = -10; t[1] = 0.5; // coordonnées de l'émetteur
     //std::vector<double> r(2); r[0] = 5; r[1] = -5; // coordonnées du récepteur
     
@@ -39,22 +40,18 @@ int main() {
     std::vector<Ray> rays;    // vecteur qui contiendra l'ensemble des rayons
 
     // initialiser layout
-    //layout.emplace_back(0.0, 0.0, 10.0, 0.0, 2);
-    //layout.emplace_back(0.0, 0.0, 0.0, 10.0, 2);
-    //layout.emplace_back(0.0, 10.0, 10.0, 10.0, 2);
-    //layout.emplace_back(10.0, 0.0, 10.0, 10.0, 2);
     // disposition de l'exo 8.1
     //const Wall wall1(0.0, 0.0, 0.0, 80.0, 4); layout.push_back(wall1);
     //const Wall wall2(0.0, 20.0, 80.0, 20.0, 4); layout.push_back(wall2);
     //const Wall wall3(0.0, 80.0, 80.0, 80.0, 4); layout.push_back(wall3);
     // disposition à 4 murs
-    //const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1); 
-    //const Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);
-    //const Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
-    //const Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
+   // const Wall wall1(0.0, 0.0, 0.0, 10.0, 2); layout.push_back(wall1); 
+   // const Wall wall2(0.0, 0.0, 10.0, 0.0, 2); layout.push_back(wall2);
+   // const Wall wall3(0.0, 10.0, 10.0, 10.0, 2); layout.push_back(wall3);
+   // const Wall wall4(10.0, 0.0, 10.0, 10.0, 2); layout.push_back(wall4);
     //const Wall wall5(4, 3, 6, 5, 2); layout.push_back(wall5);
     //const Wall wall6(4, 3, 6, 9, 2); layout.push_back(wall6);
-    //const Wall wall7(4, 3, 6, 1, 2); layout.push_back(wall7);
+    //const Wall wall7(4, 3, 6, 1, 2); layout.push_back(wall7);s
     // layout de l'usine
     // murs en brique
     const Wall wall1(0, 0, 100, 0, 1); layout.push_back(wall1);
@@ -84,15 +81,12 @@ int main() {
     const Wall wall23(35, -30, 40, -35, 3); layout.push_back(wall23);
     const Wall wall24(50, -15, 55, -20, 3); layout.push_back(wall24);
     const Wall wall25(55, -30, 50, -35, 3); layout.push_back(wall25);
-
     // antennes
     // disposition de l'usine
-    Antenna antenna_1({-10, 0.5}, 3); antennas.push_back(antenna_1); // antenne émettrice
-    //Antenna antenna_2({85, -50}, 1); antennas.push_back(antenna_2); //TX1
-    //Antenna antenna_2({105, -40}, 2); antennas.push_back(antenna_2);
+    Antenna antenna_1({-10, -4.5}, 3); antennas.push_back(antenna_1); // antenne émettrice
+    Antenna antenna_2({76, -43}, 1); antennas.push_back(antenna_2); //TX1
     // disposition de l'exo 8.1
-    //Antenna antenna_8_1({32, 10}, 2); antennas.push_back(antenna_8_1); // antenne émettrice
-
+    //Antenna antenna_8_1({-4.5, 5}, 2); antennas.push_back(antenna_8_1); // antenne émettrice
 
 
     // int q = layout.size(); // nombre de murs
@@ -123,17 +117,15 @@ int main() {
 
         for (int q = 0; q < antennas.size(); q++) { // pour chaque antenne
 
-            t = antennas[q].get_position();
-
             for (int k = 1; k <= recursion_depth; k++) { // d'abord max de réflexions puis ... puis 1 interaction puis 0
-                compute_reflections(layout, WALL_PLACEHOLDER, t, r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
+                compute_reflections(layout, WALL_PLACEHOLDER, antennas[q].get_position(), r, k, rays); // WALL_PLACEHOLDER défini dans common.hpp
             }
 
-            Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
-            rays.push_back(direct_ray); // rajouter le rayon direct
+            //Ray direct_ray(r); // créer le rayon direct (l'émetteur est rajouté en-dessous dans la boucle for)
+            //rays.push_back(direct_ray); // rajouter le rayon direct
 
             for (int i = 0; i < rays.size(); i++) { // pour chaque rayon (il ne reste que les rayons valides à la fin de compute_reflections)
-                rays[i].extend_path(t);             // rajouter l'émetteur à la liste des points du rayon
+                rays[i].extend_path(antennas[q].get_position());             // rajouter l'émetteur à la liste des points du rayon
                 rays[i].print_path_to_file(f_rays); // écrire le rayon dans le fichier
                 //rays[i].print_walls_hit();          // debug
                 find_transmissions(rays[i], layout); // trouver les transmissions
@@ -141,28 +133,31 @@ int main() {
                 add_Rcoefs(rays[i], layout); // ajouter les coefficients de réflexion
                 rays[i].print_path();               // debug
                 rays[i].print_loss_factors();       // debug
-                //printf("Power of ray %d is %e\n", i, rays[i].compute_power()); // debug
-                power += abs(rays[i].compute_field()) * abs(rays[i].compute_field());   // calculer la puissance reçue par le récepteur
+                rays[i].add_loss_factor(sqrt(antennas[q].compute_directivity(signed_acos(rays[i].get_last_segment(), {1, 0})))); // ajouter le gain de directivité
+                std::cout << "Field phasor due to ray " << i << " is : " << sqrt(60 * antennas[q].get_G_TX() * antennas[q].get_P_TX()) * rays[i].compute_field()  <<  " V/m" << std::endl;
+                power = abs(rays[i].compute_field()) * abs(rays[i].compute_field());   // calculer la puissance reçue par le récepteur 
+                power *= antennas[q].get_P_TX() * 60 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 73);
+                power_tot += power;
+                std::cout << "Power due to ray " << i << " at the receptor is : " << 10 * log10(power* 1000) << " dBm" << std::endl;
             }
-
         }
         
         fclose(f_rays);
-        power *= G_TX * P_TX * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI);
+        //power *= G_TX * P_TX * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI);
         system("gnuplot -persist \"lines.gnu\""); // afficher les rayons
-        std::cout << "Power is " << 10 * log10(power* 1000) << " dBm" << std::endl;
+        std::cout << "Power is " << 10 * log10(power_tot * 1000) << " dBm" << std::endl;
     }
 
     // boucle pour l'entièreté de la grille, calculer la puissance
 
     if (compute_power == 1) {
 
-        const double h = 2; // nombre de pas par mètre
+        const double h = 5; // nombre de pas par mètre
         const double Lx = 100.0;
         const double Ly = 70.0;
 
         double power;
-        double power_tot = 0;
+        double power_tot;
         //double max_power = 0;
         //std::complex<double> field(0.0, 0.0);
         double field_modulus;
@@ -186,12 +181,12 @@ int main() {
                 
                     //int v = 0;
                     
+                    power_tot = 0; // réinitialiser power_tot
 
                     for (int q = 0; q < antennas.size(); q++) { // pour chaque antenne
 
                         int k = recursion_depth; // debug
                         
-                    
                         power = 0;
                         //field = 0.0;
                         for (int k = 1; k <= recursion_depth; k++) { // d'abord 1 réflexion puis 2 .. jusque recursion_depth
@@ -213,7 +208,7 @@ int main() {
                             find_transmissions(rays[l], layout); // trouver les transmissions
                             compute_distance(rays[l]); // calculer la distance parcourue par le rayon 
                             add_Rcoefs(rays[l], layout); // ajouter les coefficients de réflexion
-                            rays[l].add_loss_factor(antennas[q].compute_directivity(signed_acos(rays[l].get_last_segment(), {1, 0}))); // ajouter le gain de directivité
+                            rays[l].add_loss_factor(sqrt(antennas[q].compute_directivity(signed_acos(rays[l].get_last_segment(), {1, 0})))); // ajouter le gain de directivité LA RACINE EST CRUCIALE
                             //field += rays[l].compute_field(); // calculer le champ, METHODE NON MOYENNEE
                             field_modulus = abs(rays[l].compute_field()); // calculer le champ, METHODE MOYENNEE
                             power += field_modulus * field_modulus; // calculer la puissance, FORMULE DE MOYENNE 8.80 ET PAS 8.79
@@ -221,7 +216,8 @@ int main() {
                         //std::cout << "Point : (" << r[0] << ", " << r[1] << ") ; number of rays : " << rays.size() << std::endl; // debug
                         rays.clear(); // vider le vecteur de rayons pour la prochaine itération (sinon le vecteur devient énorme et le programme plante)
                         //power = real(field * conj(field)); // calculer la puissance
-                        power *= antennas[q].get_G_TX() * antennas[q].get_P_TX() * 60 * 32 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 720 * M_PI); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
+                        power *= antennas[q].get_P_TX() * 60 * (CELERITY / FREQUENCY) * (CELERITY / FREQUENCY) / (M_PI * M_PI * 8 * 73); // rajouter les facteurs multiplicatifs, 720 pi /32 est R_a
+                                // G_TX est déjà pris en compte dans la directivité ci-dessus, qui doit être prise en compte pour chaque rayon individuel et ne peut pas être factorisé comme P_TX
                         power_list.push_back(power); // ajouter la puissance à la liste des puissances reçues par le point
                         power_tot += power;
                         //std::cout << "Power antenne " << q + 1 << " is " << 10 * log10(power * 1000) << " dBm" << std::endl;
@@ -243,7 +239,6 @@ int main() {
                         fprintf(f_danger, "%f %f %f\n", r[0], r[1], 0.0 );
                     }
                     power_list.clear(); // retirer les différentes puissances reçues par le point
-                    power_tot = 0;
                     //max_power = 0;
                 }
             }

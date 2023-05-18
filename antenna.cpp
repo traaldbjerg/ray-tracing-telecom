@@ -1,4 +1,5 @@
 #include "antenna.hpp"
+#include "setup.hpp"
 
 Antenna::Antenna(std::vector<double> t, int type) {
     position = t;
@@ -7,10 +8,10 @@ Antenna::Antenna(std::vector<double> t, int type) {
         power = 0.1; // P_TX
     }
     else if (type == 2) {
-        power = 3.16; // P_TX
+        power = 3.16227766; // P_TX
     }
     else if (type == 3) {
-        power = 3.16; // P_TX
+        power = 3.16227766; // P_TX
     }
     
 }
@@ -26,7 +27,7 @@ std::complex<double> Antenna::compute_directivity(double angle){ // retourne le 
         res = pow(10.0, (g_max - 12 * (angle - delta) / phi_3dB * (angle - delta) / phi_3dB ) / 10.0);
     }
     else {
-        res = 1; // G_TX
+        res = 1.7; // G_TX ou 1.7 ????
     }
     return res;
 }

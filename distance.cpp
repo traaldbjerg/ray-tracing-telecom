@@ -9,3 +9,8 @@ void compute_distance(Ray &ray) {
     }
     ray.add_loss_factor(exp(std::complex<double> (0, -distance * OMEGA / CELERITY))/distance);
 }
+
+
+
+
+// arbitrairement on place t pour augmenter la bande passante, alpha idem, 

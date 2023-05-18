@@ -1,7 +1,7 @@
 reset
 set pm3d explicit
 set pm3d map
-set title "Somme des puissances reçue par un récepteur dans l'usine (dBm)"
+set title "Respect des normes d'exposition bruxelloises dans l'usine"
 set xlabel "x (m)"
 set ylabel "y (m)"
 set zlabel "Exposition"
